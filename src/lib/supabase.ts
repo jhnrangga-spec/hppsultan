@@ -43,3 +43,16 @@ export type Produksi = {
   created_at: string;
   produk?: Produk;
 };
+
+export type Aset = {
+  id: string;
+  nama: string;
+  kategori: string;
+  jumlah: number;
+  harga_satuan: number;
+  total_harga: number;
+  umur_ekonomis: number;
+  tanggal_beli: string;
+  keterangan: string;
+  created_at: string;
+};

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah } from "@/lib/format";
-import type { Produksi, BahanBaku, Produk } from "@/lib/supabase";
+import type { Produksi, Aset } from "@/lib/supabase";
 import {
   Coffee,
   Package,
@@ -12,10 +12,13 @@ import {
   Crown,
   AlertCircle,
   X,
+  Landmark,
+  Wallet,
 } from "lucide-react";
 
 export default function Dashboard() {
   const [produksiList, setProduksiList] = useState<Produksi[]>([]);
+  const [asetList, setAsetList] = useState<Aset[]>([]);
   const [bahanCount, setBahanCount] = useState(0);
   const [produkCount, setProdukCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -28,7 +31,7 @@ export default function Dashboard() {
   async function loadData() {
     setLoading(true);
     setError(null);
-    const [produksiRes, bahanRes, produkRes] = await Promise.all([
+    const [produksiRes, bahanRes, produkRes, asetRes] = await Promise.all([
       supabase
         .from("produksi")
         .select("*, produk(*)")
@@ -36,6 +39,7 @@ export default function Dashboard() {
         .limit(10),
       supabase.from("bahan_baku").select("id", { count: "exact" }),
       supabase.from("produk").select("id", { count: "exact" }),
+      supabase.from("aset").select("*").order("created_at", { ascending: false }),
     ]);
 
     if (produksiRes.error) {
@@ -44,6 +48,7 @@ export default function Dashboard() {
     setProduksiList((produksiRes.data as Produksi[]) || []);
     setBahanCount(bahanRes.count || 0);
     setProdukCount(produkRes.count || 0);
+    setAsetList((asetRes.data as Aset[]) || []);
     setLoading(false);
   }
 
@@ -57,7 +62,25 @@ export default function Dashboard() {
       ? totalHPP / produksiList.reduce((s, p) => s + p.jumlah_produksi, 0)
       : 0;
 
+  const totalModal = asetList.reduce((s, a) => s + a.total_harga, 0);
+  const penyusutanPerBulan = asetList.reduce(
+    (s, a) => s + a.total_harga / a.umur_ekonomis / 12,
+    0
+  );
+
   const stats = [
+    {
+      label: "Total Modal Awal",
+      value: formatRupiah(totalModal),
+      icon: Landmark,
+      color: "bg-gold-light/30 text-amber-700",
+    },
+    {
+      label: "Penyusutan/Bulan",
+      value: formatRupiah(penyusutanPerBulan),
+      icon: Wallet,
+      color: "bg-red-100 text-red-600",
+    },
     {
       label: "Total Bahan Baku",
       value: bahanCount.toString(),
@@ -98,9 +121,7 @@ export default function Dashboard() {
         <Crown className="w-8 h-8 text-gold" />
         <div>
           <h1 className="text-3xl font-bold text-brand-dark">Dashboard</h1>
-          <p className="text-brand/60">
-            Sistem HPP Kopi Brand Sultan
-          </p>
+          <p className="text-brand/60">Sistem HPP Kopi Brand Sultan</p>
         </div>
       </div>
 
@@ -120,7 +141,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -140,66 +161,111 @@ export default function Dashboard() {
         })}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10">
-        <div className="p-6 border-b border-brand/10">
-          <h2 className="text-lg font-semibold text-brand-dark">
-            Riwayat Produksi Terbaru
-          </h2>
-        </div>
-        {produksiList.length === 0 ? (
-          <div className="p-12 text-center text-brand/40">
-            <Coffee className="w-12 h-12 mx-auto mb-4 opacity-30" />
-            <p>Belum ada data produksi.</p>
-            <p className="text-sm mt-1">
-              Mulai dengan menambahkan bahan baku dan produk.
-            </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+          <div className="p-6 border-b border-brand/10">
+            <h2 className="text-lg font-semibold text-brand-dark">
+              Riwayat Produksi Terbaru
+            </h2>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-brand-dark/5">
-                <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
-                    Tanggal
-                  </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
-                    Produk
-                  </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
-                    Jumlah
-                  </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
-                    Total HPP
-                  </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
-                    HPP/Unit
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand/5">
-                {produksiList.map((p) => (
-                  <tr key={p.id} className="hover:bg-brand/5">
-                    <td className="px-6 py-4 text-sm">
-                      {new Date(p.tanggal).toLocaleDateString("id-ID")}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium">
-                      {p.produk?.nama || "-"}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-right">
-                      {p.jumlah_produksi}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-right font-medium">
-                      {formatRupiah(p.total_hpp)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-right text-brand">
-                      {formatRupiah(p.hpp_per_unit)}
-                    </td>
+          {produksiList.length === 0 ? (
+            <div className="p-12 text-center text-brand/40">
+              <Coffee className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>Belum ada data produksi.</p>
+              <p className="text-sm mt-1">
+                Mulai dengan menambahkan bahan baku dan produk.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-brand-dark/5">
+                  <tr>
+                    <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                      Tanggal
+                    </th>
+                    <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                      Produk
+                    </th>
+                    <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                      Jumlah
+                    </th>
+                    <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                      HPP/Unit
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-brand/5">
+                  {produksiList.map((p) => (
+                    <tr key={p.id} className="hover:bg-brand/5">
+                      <td className="px-6 py-4 text-sm">
+                        {new Date(p.tanggal).toLocaleDateString("id-ID")}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium">
+                        {p.produk?.nama || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-right">
+                        {p.jumlah_produksi}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-right text-brand font-medium">
+                        {formatRupiah(p.hpp_per_unit)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+          <div className="p-6 border-b border-brand/10">
+            <h2 className="text-lg font-semibold text-brand-dark">
+              Ringkasan Aset Modal
+            </h2>
           </div>
-        )}
+          {asetList.length === 0 ? (
+            <div className="p-12 text-center text-brand/40">
+              <Landmark className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>Belum ada data aset.</p>
+              <p className="text-sm mt-1">
+                Tambahkan peralatan dan mesin di halaman Aset Modal.
+              </p>
+            </div>
+          ) : (
+            <div className="p-6 space-y-3">
+              {asetList.slice(0, 8).map((a) => (
+                <div
+                  key={a.id}
+                  className="flex items-center justify-between bg-cream rounded-lg px-4 py-3"
+                >
+                  <div>
+                    <span className="font-medium text-sm">{a.nama}</span>
+                    <span className="text-xs text-brand/40 ml-2">
+                      {a.kategori}
+                    </span>
+                  </div>
+                  <span className="font-semibold text-sm text-brand">
+                    {formatRupiah(a.total_harga)}
+                  </span>
+                </div>
+              ))}
+              {asetList.length > 8 && (
+                <p className="text-xs text-center text-brand/40">
+                  +{asetList.length - 8} aset lainnya
+                </p>
+              )}
+              <div className="border-t border-brand/10 pt-3 flex justify-between">
+                <span className="font-semibold text-brand-dark">
+                  Total Modal Awal
+                </span>
+                <span className="font-bold text-lg text-gold">
+                  {formatRupiah(totalModal)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

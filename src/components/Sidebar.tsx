@@ -12,10 +12,12 @@ import {
   Crown,
   Menu,
   X,
+  Landmark,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/aset", label: "Aset Modal", icon: Landmark },
   { href: "/bahan-baku", label: "Bahan Baku", icon: Package },
   { href: "/produk", label: "Produk", icon: Coffee },
   { href: "/kalkulator", label: "Kalkulator HPP", icon: Calculator },
