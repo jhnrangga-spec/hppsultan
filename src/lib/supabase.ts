@@ -1,0 +1,45 @@
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export type BahanBaku = {
+  id: string;
+  nama: string;
+  satuan: string;
+  harga_per_satuan: number;
+  stok: number;
+  created_at: string;
+};
+
+export type Produk = {
+  id: string;
+  nama: string;
+  deskripsi: string;
+  harga_jual: number;
+  created_at: string;
+};
+
+export type ResepItem = {
+  id: string;
+  produk_id: string;
+  bahan_baku_id: string;
+  jumlah: number;
+  bahan_baku?: BahanBaku;
+};
+
+export type Produksi = {
+  id: string;
+  produk_id: string;
+  jumlah_produksi: number;
+  biaya_tenaga_kerja: number;
+  biaya_overhead: number;
+  total_biaya_bahan: number;
+  total_hpp: number;
+  hpp_per_unit: number;
+  tanggal: string;
+  created_at: string;
+  produk?: Produk;
+};
