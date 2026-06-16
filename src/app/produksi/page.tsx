@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah, formatDate } from "@/lib/format";
 import type { Produksi } from "@/lib/supabase";
-import { ClipboardList, Trash2 } from "lucide-react";
+import { ClipboardList, Trash2, AlertCircle, X } from "lucide-react";
 
 export default function ProduksiPage() {
   const [items, setItems] = useState<Produksi[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -16,17 +17,28 @@ export default function ProduksiPage() {
 
   async function loadData() {
     setLoading(true);
-    const { data } = await supabase
+    setError(null);
+    const { data, error: err } = await supabase
       .from("produksi")
       .select("*, produk(*)")
       .order("tanggal", { ascending: false });
+    if (err) {
+      setError("Gagal memuat data: " + err.message);
+    }
     setItems((data as Produksi[]) || []);
     setLoading(false);
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Yakin ingin menghapus data produksi ini?")) return;
-    await supabase.from("produksi").delete().eq("id", id);
+    const { error: err } = await supabase
+      .from("produksi")
+      .delete()
+      .eq("id", id);
+    if (err) {
+      setError("Gagal menghapus: " + err.message);
+      return;
+    }
     loadData();
   }
 
@@ -41,11 +53,25 @@ export default function ProduksiPage() {
           <h1 className="text-3xl font-bold text-brand-dark">
             Riwayat Produksi
           </h1>
-          <p className="text-brand/60">
-            Semua catatan produksi dan HPP
-          </p>
+          <p className="text-brand/60">Semua catatan produksi dan HPP</p>
         </div>
       </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400 hover:text-red-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {!loading && items.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

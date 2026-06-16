@@ -10,6 +10,8 @@ import {
   TrendingUp,
   DollarSign,
   Crown,
+  AlertCircle,
+  X,
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -17,6 +19,7 @@ export default function Dashboard() {
   const [bahanCount, setBahanCount] = useState(0);
   const [produkCount, setProdukCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -24,6 +27,7 @@ export default function Dashboard() {
 
   async function loadData() {
     setLoading(true);
+    setError(null);
     const [produksiRes, bahanRes, produkRes] = await Promise.all([
       supabase
         .from("produksi")
@@ -34,6 +38,9 @@ export default function Dashboard() {
       supabase.from("produk").select("id", { count: "exact" }),
     ]);
 
+    if (produksiRes.error) {
+      setError("Gagal memuat data: " + produksiRes.error.message);
+    }
     setProduksiList((produksiRes.data as Produksi[]) || []);
     setBahanCount(bahanRes.count || 0);
     setProdukCount(produkRes.count || 0);
@@ -96,6 +103,22 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400 hover:text-red-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => {

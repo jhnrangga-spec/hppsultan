@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah } from "@/lib/format";
 import type { Produk, ResepItem } from "@/lib/supabase";
-import { Calculator, Coffee, Save, CheckCircle } from "lucide-react";
+import { Calculator, Save, CheckCircle, AlertCircle, X } from "lucide-react";
 
 export default function KalkulatorPage() {
   const [produkList, setProdukList] = useState<Produk[]>([]);
@@ -19,6 +19,7 @@ export default function KalkulatorPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadProduk();
@@ -31,16 +32,26 @@ export default function KalkulatorPage() {
 
   async function loadProduk() {
     setLoading(true);
-    const { data } = await supabase.from("produk").select("*").order("nama");
+    const { data, error: err } = await supabase
+      .from("produk")
+      .select("*")
+      .order("nama");
+    if (err) {
+      setError("Gagal memuat produk: " + err.message);
+    }
     setProdukList((data as Produk[]) || []);
     setLoading(false);
   }
 
   async function loadResep(produkId: string) {
-    const { data } = await supabase
+    const { data, error: err } = await supabase
       .from("resep")
       .select("*, bahan_baku(*)")
       .eq("produk_id", produkId);
+    if (err) {
+      setError("Gagal memuat resep: " + err.message);
+      return;
+    }
     setResepItems((data as ResepItem[]) || []);
   }
 
@@ -57,9 +68,7 @@ export default function KalkulatorPage() {
   const hppPerUnit = qty > 0 ? totalHPP / qty : 0;
 
   const currentProduk = produkList.find((p) => p.id === selectedProduk);
-  const margin = currentProduk
-    ? currentProduk.harga_jual - hppPerUnit
-    : 0;
+  const margin = currentProduk ? currentProduk.harga_jual - hppPerUnit : 0;
   const marginPersen =
     currentProduk && currentProduk.harga_jual > 0
       ? (margin / currentProduk.harga_jual) * 100
@@ -68,8 +77,9 @@ export default function KalkulatorPage() {
   async function handleSave() {
     if (!selectedProduk || qty <= 0) return;
     setSaving(true);
+    setError(null);
 
-    await supabase.from("produksi").insert({
+    const { error: err } = await supabase.from("produksi").insert({
       produk_id: selectedProduk,
       jumlah_produksi: qty,
       biaya_tenaga_kerja: tenagaKerja,
@@ -81,6 +91,12 @@ export default function KalkulatorPage() {
     });
 
     setSaving(false);
+
+    if (err) {
+      setError("Gagal menyimpan produksi: " + err.message);
+      return;
+    }
+
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }
@@ -106,6 +122,22 @@ export default function KalkulatorPage() {
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400 hover:text-red-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -200,8 +232,7 @@ export default function KalkulatorPage() {
                       resepItems.reduce(
                         (sum, i) =>
                           sum +
-                          i.jumlah *
-                            (i.bahan_baku?.harga_per_satuan || 0),
+                          i.jumlah * (i.bahan_baku?.harga_per_satuan || 0),
                         0
                       )
                     )}

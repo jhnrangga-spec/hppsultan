@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah } from "@/lib/format";
 import type { Produk, BahanBaku, ResepItem } from "@/lib/supabase";
-import { Coffee, Plus, Pencil, Trash2, X, ChefHat } from "lucide-react";
+import { Coffee, Plus, Pencil, Trash2, X, ChefHat, AlertCircle } from "lucide-react";
 
 export default function ProdukPage() {
   const [produkList, setProdukList] = useState<Produk[]>([]);
@@ -14,6 +14,8 @@ export default function ProdukPage() {
   const [showResep, setShowResep] = useState<string | null>(null);
   const [resepItems, setResepItems] = useState<ResepItem[]>([]);
   const [editItem, setEditItem] = useState<Produk | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     nama: "",
     deskripsi: "",
@@ -30,20 +32,28 @@ export default function ProdukPage() {
 
   async function loadData() {
     setLoading(true);
+    setError(null);
     const [produkRes, bahanRes] = await Promise.all([
       supabase.from("produk").select("*").order("nama"),
       supabase.from("bahan_baku").select("*").order("nama"),
     ]);
+    if (produkRes.error) {
+      setError("Gagal memuat produk: " + produkRes.error.message);
+    }
     setProdukList((produkRes.data as Produk[]) || []);
     setBahanList((bahanRes.data as BahanBaku[]) || []);
     setLoading(false);
   }
 
   async function loadResep(produkId: string) {
-    const { data } = await supabase
+    const { data, error: err } = await supabase
       .from("resep")
       .select("*, bahan_baku(*)")
       .eq("produk_id", produkId);
+    if (err) {
+      setError("Gagal memuat resep: " + err.message);
+      return;
+    }
     setResepItems((data as ResepItem[]) || []);
     setShowResep(produkId);
   }
@@ -52,6 +62,7 @@ export default function ProdukPage() {
     setEditItem(null);
     setForm({ nama: "", deskripsi: "", harga_jual: "" });
     setShowForm(true);
+    setError(null);
   }
 
   function openEdit(item: Produk) {
@@ -62,20 +73,35 @@ export default function ProdukPage() {
       harga_jual: item.harga_jual.toString(),
     });
     setShowForm(true);
+    setError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
     const payload = {
       nama: form.nama,
       deskripsi: form.deskripsi,
       harga_jual: parseFloat(form.harga_jual),
     };
 
+    let err;
     if (editItem) {
-      await supabase.from("produk").update(payload).eq("id", editItem.id);
+      ({ error: err } = await supabase
+        .from("produk")
+        .update(payload)
+        .eq("id", editItem.id));
     } else {
-      await supabase.from("produk").insert(payload);
+      ({ error: err } = await supabase.from("produk").insert(payload));
+    }
+
+    setSubmitting(false);
+
+    if (err) {
+      setError("Gagal menyimpan: " + err.message);
+      return;
     }
 
     setShowForm(false);
@@ -84,25 +110,44 @@ export default function ProdukPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Yakin ingin menghapus produk ini?")) return;
-    await supabase.from("produk").delete().eq("id", id);
+    const { error: err } = await supabase
+      .from("produk")
+      .delete()
+      .eq("id", id);
+    if (err) {
+      setError("Gagal menghapus: " + err.message);
+      return;
+    }
     loadData();
   }
 
   async function addResepItem(e: React.FormEvent) {
     e.preventDefault();
     if (!showResep) return;
-    await supabase.from("resep").insert({
+    setError(null);
+
+    const { error: err } = await supabase.from("resep").insert({
       produk_id: showResep,
       bahan_baku_id: resepForm.bahan_baku_id,
       jumlah: parseFloat(resepForm.jumlah),
     });
+
+    if (err) {
+      setError("Gagal menambah resep: " + err.message);
+      return;
+    }
+
     setResepForm({ bahan_baku_id: "", jumlah: "" });
     loadResep(showResep);
   }
 
   async function removeResepItem(id: string) {
     if (!showResep) return;
-    await supabase.from("resep").delete().eq("id", id);
+    const { error: err } = await supabase.from("resep").delete().eq("id", id);
+    if (err) {
+      setError("Gagal menghapus resep: " + err.message);
+      return;
+    }
     loadResep(showResep);
   }
 
@@ -125,9 +170,25 @@ export default function ProdukPage() {
         </button>
       </div>
 
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400 hover:text-red-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl mx-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-brand-dark">
                 {editItem ? "Edit" : "Tambah"} Produk
@@ -193,9 +254,14 @@ export default function ProdukPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors"
+                  disabled={submitting}
+                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
                 >
-                  {editItem ? "Simpan" : "Tambah"}
+                  {submitting
+                    ? "Menyimpan..."
+                    : editItem
+                    ? "Simpan"
+                    : "Tambah"}
                 </button>
               </div>
             </form>
@@ -205,7 +271,7 @@ export default function ProdukPage() {
 
       {showResep && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl mx-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-brand-dark flex items-center gap-2">
                 <ChefHat className="w-5 h-5 text-gold" />
@@ -219,10 +285,7 @@ export default function ProdukPage() {
               </button>
             </div>
 
-            <form
-              onSubmit={addResepItem}
-              className="flex gap-3 mb-4"
-            >
+            <form onSubmit={addResepItem} className="flex gap-3 mb-4">
               <select
                 required
                 value={resepForm.bahan_baku_id}

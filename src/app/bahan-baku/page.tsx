@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah } from "@/lib/format";
 import type { BahanBaku } from "@/lib/supabase";
-import { Package, Plus, Pencil, Trash2, X } from "lucide-react";
+import { Package, Plus, Pencil, Trash2, X, AlertCircle } from "lucide-react";
 
 export default function BahanBakuPage() {
   const [items, setItems] = useState<BahanBaku[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState<BahanBaku | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     nama: "",
     satuan: "kg",
@@ -24,11 +26,17 @@ export default function BahanBakuPage() {
 
   async function loadData() {
     setLoading(true);
-    const { data } = await supabase
+    setError(null);
+    const { data, error: err } = await supabase
       .from("bahan_baku")
       .select("*")
       .order("nama");
-    setItems((data as BahanBaku[]) || []);
+    if (err) {
+      setError("Gagal memuat data: " + err.message);
+      setItems([]);
+    } else {
+      setItems((data as BahanBaku[]) || []);
+    }
     setLoading(false);
   }
 
@@ -36,6 +44,7 @@ export default function BahanBakuPage() {
     setEditItem(null);
     setForm({ nama: "", satuan: "kg", harga_per_satuan: "", stok: "" });
     setShowForm(true);
+    setError(null);
   }
 
   function openEdit(item: BahanBaku) {
@@ -47,10 +56,14 @@ export default function BahanBakuPage() {
       stok: item.stok.toString(),
     });
     setShowForm(true);
+    setError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
     const payload = {
       nama: form.nama,
       satuan: form.satuan,
@@ -58,10 +71,21 @@ export default function BahanBakuPage() {
       stok: parseFloat(form.stok),
     };
 
+    let err;
     if (editItem) {
-      await supabase.from("bahan_baku").update(payload).eq("id", editItem.id);
+      ({ error: err } = await supabase
+        .from("bahan_baku")
+        .update(payload)
+        .eq("id", editItem.id));
     } else {
-      await supabase.from("bahan_baku").insert(payload);
+      ({ error: err } = await supabase.from("bahan_baku").insert(payload));
+    }
+
+    setSubmitting(false);
+
+    if (err) {
+      setError("Gagal menyimpan: " + err.message);
+      return;
     }
 
     setShowForm(false);
@@ -70,7 +94,14 @@ export default function BahanBakuPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Yakin ingin menghapus bahan baku ini?")) return;
-    await supabase.from("bahan_baku").delete().eq("id", id);
+    const { error: err } = await supabase
+      .from("bahan_baku")
+      .delete()
+      .eq("id", id);
+    if (err) {
+      setError("Gagal menghapus: " + err.message);
+      return;
+    }
     loadData();
   }
 
@@ -93,9 +124,25 @@ export default function BahanBakuPage() {
         </button>
       </div>
 
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400 hover:text-red-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl mx-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-brand-dark">
                 {editItem ? "Edit" : "Tambah"} Bahan Baku
@@ -182,9 +229,10 @@ export default function BahanBakuPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors"
+                  disabled={submitting}
+                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
                 >
-                  {editItem ? "Simpan" : "Tambah"}
+                  {submitting ? "Menyimpan..." : editItem ? "Simpan" : "Tambah"}
                 </button>
               </div>
             </form>
