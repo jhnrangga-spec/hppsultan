@@ -9,7 +9,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
-type ReportType = "hpp" | "stok" | "labarugi";
+type ReportType = "hpp" | "stok" | "labarugi" | "aset";
 
 export default function LaporanPage() {
   const [bahanList, setBahanList] = useState<BahanBaku[]>([]);
@@ -121,6 +121,36 @@ export default function LaporanPage() {
     };
   }
 
+  function getAsetData() {
+    const today = new Date();
+    const rows = asetList.map((a) => {
+      const beliDate = new Date(a.tanggal_beli);
+      const bulanPakai = Math.max(0, (today.getFullYear() - beliDate.getFullYear()) * 12 + (today.getMonth() - beliDate.getMonth()));
+      const penyusutanPerBulan = a.total_harga / a.umur_ekonomis / 12;
+      const totalPenyusutan = Math.min(penyusutanPerBulan * bulanPakai, a.total_harga);
+      const nilaiSekarang = a.total_harga - totalPenyusutan;
+      return {
+        nama: a.nama,
+        kategori: a.kategori,
+        jumlah: a.jumlah,
+        hargaSatuan: a.harga_satuan,
+        totalHarga: a.total_harga,
+        umurEkonomis: a.umur_ekonomis,
+        tanggalBeli: formatDate(a.tanggal_beli),
+        bulanPakai,
+        penyusutanPerBulan,
+        totalPenyusutan,
+        nilaiSekarang,
+        keterangan: a.keterangan || "",
+      };
+    });
+    const totalModal = rows.reduce((s, r) => s + r.totalHarga, 0);
+    const totalNilaiSekarang = rows.reduce((s, r) => s + r.nilaiSekarang, 0);
+    const totalPenyusutanBulan = rows.reduce((s, r) => s + r.penyusutanPerBulan, 0);
+    const totalAkumulasi = rows.reduce((s, r) => s + r.totalPenyusutan, 0);
+    return { rows, totalModal, totalNilaiSekarang, totalPenyusutanBulan, totalAkumulasi };
+  }
+
   function periodeLabel() {
     return `${formatDate(dateFrom)} - ${formatDate(dateTo)}`;
   }
@@ -172,7 +202,7 @@ export default function LaporanPage() {
         headStyles: { fillColor: [74, 44, 23] },
         footStyles: { fillColor: [245, 240, 230], textColor: [74, 44, 23], fontStyle: "bold" },
       });
-    } else {
+    } else if (reportType === "labarugi") {
       doc.text(`Laporan Laba Rugi`, pageWidth / 2, 22, { align: "center" });
       doc.text(`Periode: ${periodeLabel()}`, pageWidth / 2, 28, { align: "center" });
 
@@ -207,6 +237,25 @@ export default function LaporanPage() {
             data.cell.styles.fillColor = [245, 240, 230];
           }
         },
+      });
+    } else if (reportType === "aset") {
+      doc.text(`Laporan Aset Modal`, pageWidth / 2, 22, { align: "center" });
+      doc.text(`Per tanggal: ${formatDate(new Date().toISOString())}`, pageWidth / 2, 28, { align: "center" });
+
+      const aset = getAsetData();
+      autoTable(doc, {
+        startY: 35,
+        head: [["Nama", "Kategori", "Qty", "Harga Satuan", "Total Harga", "Umur (th)", "Tgl Beli", "Penyusutan/Bln", "Akum. Penyusutan", "Nilai Sekarang"]],
+        body: aset.rows.map((r) => [
+          r.nama, r.kategori, r.jumlah,
+          formatRupiah(r.hargaSatuan), formatRupiah(r.totalHarga),
+          r.umurEkonomis, r.tanggalBeli,
+          formatRupiah(r.penyusutanPerBulan), formatRupiah(r.totalPenyusutan), formatRupiah(r.nilaiSekarang),
+        ]),
+        foot: [["", "", "", "TOTAL", formatRupiah(aset.totalModal), "", "", formatRupiah(aset.totalPenyusutanBulan), formatRupiah(aset.totalAkumulasi), formatRupiah(aset.totalNilaiSekarang)]],
+        styles: { fontSize: 7 },
+        headStyles: { fillColor: [74, 44, 23] },
+        footStyles: { fillColor: [245, 240, 230], textColor: [74, 44, 23], fontStyle: "bold" },
       });
     }
 
@@ -249,7 +298,7 @@ export default function LaporanPage() {
         [],
         ["", "", "", "", "", "TOTAL", totalBeli],
       ];
-    } else {
+    } else if (reportType === "labarugi") {
       sheetName = "Laba Rugi";
       const lr = getLabaRugiData();
       wsData = [
@@ -271,6 +320,21 @@ export default function LaporanPage() {
         [],
         ["LABA BERSIH", lr.labaBersih],
       ];
+    } else {
+      sheetName = "Aset Modal";
+      const aset = getAsetData();
+      wsData = [
+        ["LAPORAN ASET MODAL - KOPI SULTAN"],
+        [`Per tanggal: ${formatDate(new Date().toISOString())}`],
+        [],
+        ["Nama", "Kategori", "Qty", "Harga Satuan", "Total Harga", "Umur Ekonomis (th)", "Tgl Beli", "Penyusutan/Bulan", "Akum. Penyusutan", "Nilai Sekarang", "Keterangan"],
+        ...aset.rows.map((r) => [
+          r.nama, r.kategori, r.jumlah, r.hargaSatuan, r.totalHarga,
+          r.umurEkonomis, r.tanggalBeli, r.penyusutanPerBulan, r.totalPenyusutan, r.nilaiSekarang, r.keterangan,
+        ]),
+        [],
+        ["", "", "", "TOTAL", aset.totalModal, "", "", aset.totalPenyusutanBulan, aset.totalAkumulasi, aset.totalNilaiSekarang, ""],
+      ];
     }
 
     const wb = XLSX.utils.book_new();
@@ -283,6 +347,7 @@ export default function LaporanPage() {
     { key: "hpp", label: "HPP Produksi" },
     { key: "stok", label: "Stok Bahan Baku" },
     { key: "labarugi", label: "Laba Rugi" },
+    { key: "aset", label: "Aset Modal" },
   ];
 
   return (
@@ -326,7 +391,7 @@ export default function LaporanPage() {
             ))}
           </div>
 
-          {reportType !== "stok" && (
+          {reportType !== "stok" && reportType !== "aset" && (
             <div className="flex items-center gap-2 ml-auto">
               <label className="text-sm text-brand/60">Dari:</label>
               <input
@@ -374,6 +439,7 @@ export default function LaporanPage() {
             {reportType === "hpp" && <HPPPreview data={getHPPData()} />}
             {reportType === "stok" && <StokPreview data={getStokData()} />}
             {reportType === "labarugi" && <LabaRugiPreview data={getLabaRugiData()} produkList={produkList} produksiList={filteredProduksi} />}
+            {reportType === "aset" && <AsetPreview data={getAsetData()} />}
           </div>
         )}
       </div>
@@ -589,6 +655,80 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+type AsetRow = { nama: string; kategori: string; jumlah: number; hargaSatuan: number; totalHarga: number; umurEkonomis: number; tanggalBeli: string; bulanPakai: number; penyusutanPerBulan: number; totalPenyusutan: number; nilaiSekarang: number; keterangan: string };
+type AsetData = { rows: AsetRow[]; totalModal: number; totalNilaiSekarang: number; totalPenyusutanBulan: number; totalAkumulasi: number };
+
+function AsetPreview({ data }: { data: AsetData }) {
+  if (data.rows.length === 0) {
+    return <p className="text-center text-brand/40 py-8">Belum ada data aset.</p>;
+  }
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-amber-50 rounded-xl p-5 border border-amber-200">
+          <p className="text-sm text-amber-600">Total Modal Awal</p>
+          <p className="text-2xl font-bold text-amber-700">{formatRupiah(data.totalModal)}</p>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
+          <p className="text-sm text-blue-600">Nilai Sekarang</p>
+          <p className="text-2xl font-bold text-blue-700">{formatRupiah(data.totalNilaiSekarang)}</p>
+        </div>
+        <div className="bg-red-50 rounded-xl p-5 border border-red-200">
+          <p className="text-sm text-red-600">Akum. Penyusutan</p>
+          <p className="text-2xl font-bold text-red-700">{formatRupiah(data.totalAkumulasi)}</p>
+        </div>
+        <div className="bg-purple-50 rounded-xl p-5 border border-purple-200">
+          <p className="text-sm text-purple-600">Penyusutan/Bulan</p>
+          <p className="text-2xl font-bold text-purple-700">{formatRupiah(data.totalPenyusutanBulan)}</p>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-brand-dark/5">
+            <tr>
+              <th className="text-left px-4 py-2 font-medium text-brand/70">Nama</th>
+              <th className="text-left px-4 py-2 font-medium text-brand/70">Kategori</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Qty</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Total Harga</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Umur (th)</th>
+              <th className="text-left px-4 py-2 font-medium text-brand/70">Tgl Beli</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Penyusutan/Bln</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Akum. Penyusutan</th>
+              <th className="text-right px-4 py-2 font-medium text-brand/70">Nilai Sekarang</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-brand/5">
+            {data.rows.map((r, i) => (
+              <tr key={i} className="hover:bg-brand/5">
+                <td className="px-4 py-2 font-medium">{r.nama}</td>
+                <td className="px-4 py-2 text-xs text-brand/60">{r.kategori}</td>
+                <td className="px-4 py-2 text-right">{r.jumlah}</td>
+                <td className="px-4 py-2 text-right">{formatRupiah(r.totalHarga)}</td>
+                <td className="px-4 py-2 text-right">{r.umurEkonomis}</td>
+                <td className="px-4 py-2 text-xs">{r.tanggalBeli}</td>
+                <td className="px-4 py-2 text-right">{formatRupiah(r.penyusutanPerBulan)}</td>
+                <td className="px-4 py-2 text-right text-red-600">{formatRupiah(r.totalPenyusutan)}</td>
+                <td className="px-4 py-2 text-right font-semibold text-brand">{formatRupiah(r.nilaiSekarang)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot className="bg-brand-dark/5">
+            <tr>
+              <td colSpan={3} className="px-4 py-2 font-semibold text-right">TOTAL</td>
+              <td className="px-4 py-2 text-right font-bold">{formatRupiah(data.totalModal)}</td>
+              <td colSpan={2} />
+              <td className="px-4 py-2 text-right font-bold">{formatRupiah(data.totalPenyusutanBulan)}</td>
+              <td className="px-4 py-2 text-right font-bold text-red-600">{formatRupiah(data.totalAkumulasi)}</td>
+              <td className="px-4 py-2 text-right font-bold text-brand">{formatRupiah(data.totalNilaiSekarang)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 }
