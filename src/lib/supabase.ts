@@ -8,6 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export type BahanBaku = {
   id: string;
   nama: string;
+  deskripsi: string;
   satuan: string;
   harga_per_satuan: number;
   stok: number;

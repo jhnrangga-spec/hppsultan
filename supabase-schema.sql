@@ -7,6 +7,7 @@
 create table if not exists bahan_baku (
   id uuid default gen_random_uuid() primary key,
   nama text not null,
+  deskripsi text default '',
   satuan text not null default 'kg',
   harga_per_satuan numeric not null default 0,
   stok numeric not null default 0,

@@ -15,6 +15,7 @@ export default function BahanBakuPage() {
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     nama: "",
+    deskripsi: "",
     satuan: "kg",
     harga_per_satuan: "",
     stok: "",
@@ -42,7 +43,7 @@ export default function BahanBakuPage() {
 
   function openAdd() {
     setEditItem(null);
-    setForm({ nama: "", satuan: "kg", harga_per_satuan: "", stok: "" });
+    setForm({ nama: "", deskripsi: "", satuan: "kg", harga_per_satuan: "", stok: "" });
     setShowForm(true);
     setError(null);
   }
@@ -51,6 +52,7 @@ export default function BahanBakuPage() {
     setEditItem(item);
     setForm({
       nama: item.nama,
+      deskripsi: item.deskripsi || "",
       satuan: item.satuan,
       harga_per_satuan: item.harga_per_satuan.toString(),
       stok: item.stok.toString(),
@@ -66,6 +68,7 @@ export default function BahanBakuPage() {
 
     const payload = {
       nama: form.nama,
+      deskripsi: form.deskripsi,
       satuan: form.satuan,
       harga_per_satuan: parseFloat(form.harga_per_satuan),
       stok: parseFloat(form.stok),
@@ -166,6 +169,20 @@ export default function BahanBakuPage() {
                   onChange={(e) => setForm({ ...form, nama: e.target.value })}
                   className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="Contoh: Biji Kopi Arabica"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-brand/70 mb-1">
+                  Deskripsi
+                </label>
+                <textarea
+                  value={form.deskripsi}
+                  onChange={(e) =>
+                    setForm({ ...form, deskripsi: e.target.value })
+                  }
+                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  rows={2}
+                  placeholder="Keterangan bahan baku (opsional)"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -278,7 +295,14 @@ export default function BahanBakuPage() {
               <tbody className="divide-y divide-brand/5">
                 {items.map((item) => (
                   <tr key={item.id} className="hover:bg-brand/5">
-                    <td className="px-6 py-4 font-medium">{item.nama}</td>
+                    <td className="px-6 py-4">
+                      <span className="font-medium">{item.nama}</span>
+                      {item.deskripsi && (
+                        <p className="text-xs text-brand/40 mt-0.5">
+                          {item.deskripsi}
+                        </p>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-sm text-brand/60">
                       {item.satuan}
                     </td>
