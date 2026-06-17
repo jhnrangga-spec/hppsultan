@@ -21,15 +21,6 @@ export default function KalkulatorPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadProduk();
-  }, []);
-
-  useEffect(() => {
-    if (selectedProduk) loadResep(selectedProduk);
-    else setResepItems([]);
-  }, [selectedProduk]);
-
   async function loadProduk() {
     setLoading(true);
     const { data, error: err } = await supabase
@@ -54,6 +45,18 @@ export default function KalkulatorPage() {
     }
     setResepItems((data as ResepItem[]) || []);
   }
+
+  useEffect(() => {
+    loadProduk();
+  }, []);
+
+  useEffect(() => {
+    if (selectedProduk) {
+      loadResep(selectedProduk);
+    } else {
+      setResepItems([]);
+    }
+  }, [selectedProduk]);
 
   const qty = parseFloat(jumlahProduksi) || 0;
   const tenagaKerja = parseFloat(biayaTenagaKerja) || 0;

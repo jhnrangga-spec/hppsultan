@@ -21,10 +21,6 @@ export default function BahanBakuPage() {
     stok: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -40,6 +36,10 @@ export default function BahanBakuPage() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   function openAdd() {
     setEditItem(null);

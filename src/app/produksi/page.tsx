@@ -11,10 +11,6 @@ export default function ProduksiPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -28,6 +24,10 @@ export default function ProduksiPage() {
     setItems((data as Produksi[]) || []);
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   async function handleDelete(id: string) {
     if (!confirm("Yakin ingin menghapus data produksi ini?")) return;

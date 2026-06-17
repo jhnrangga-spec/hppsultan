@@ -26,10 +26,6 @@ export default function ProdukPage() {
     jumlah: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -44,6 +40,10 @@ export default function ProdukPage() {
     setBahanList((bahanRes.data as BahanBaku[]) || []);
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   async function loadResep(produkId: string) {
     const { data, error: err } = await supabase

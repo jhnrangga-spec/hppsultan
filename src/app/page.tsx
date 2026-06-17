@@ -24,10 +24,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -51,6 +47,10 @@ export default function Dashboard() {
     setAsetList((asetRes.data as Aset[]) || []);
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const totalProduksi = produksiList.reduce(
     (sum, p) => sum + p.jumlah_produksi,

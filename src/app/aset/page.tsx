@@ -46,10 +46,6 @@ export default function AsetPage() {
     keterangan: "",
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -65,6 +61,10 @@ export default function AsetPage() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   function openAdd() {
     setEditItem(null);
