@@ -268,6 +268,9 @@ export default function BahanBakuPage() {
                     Stok
                   </th>
                   <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                    Nilai Stok
+                  </th>
+                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
                     Aksi
                   </th>
                 </tr>
@@ -284,6 +287,9 @@ export default function BahanBakuPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-right">
                       {item.stok} {item.satuan}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-right font-medium text-brand">
+                      {formatRupiah(item.harga_per_satuan * item.stok)}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -304,6 +310,28 @@ export default function BahanBakuPage() {
                   </tr>
                 ))}
               </tbody>
+              <tfoot className="bg-brand-dark/5">
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="px-6 py-3 text-sm font-semibold text-brand-dark text-right"
+                  >
+                    TOTAL NILAI STOK
+                  </td>
+                  <td className="px-6 py-3 text-sm font-bold text-right text-brand-dark">
+                    {items.length} item
+                  </td>
+                  <td className="px-6 py-3 text-sm font-bold text-right text-brand">
+                    {formatRupiah(
+                      items.reduce(
+                        (sum, item) => sum + item.harga_per_satuan * item.stok,
+                        0
+                      )
+                    )}
+                  </td>
+                  <td />
+                </tr>
+              </tfoot>
             </table>
           </div>
         )}
