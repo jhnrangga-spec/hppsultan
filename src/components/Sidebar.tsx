@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   Landmark,
+  FileText,
 } from "lucide-react";
 
 const menuItems = [
@@ -22,6 +23,7 @@ const menuItems = [
   { href: "/produk", label: "Produk", icon: Coffee },
   { href: "/kalkulator", label: "Kalkulator HPP", icon: Calculator },
   { href: "/produksi", label: "Riwayat Produksi", icon: ClipboardList },
+  { href: "/laporan", label: "Laporan", icon: FileText },
 ];
 
 export default function Sidebar() {
