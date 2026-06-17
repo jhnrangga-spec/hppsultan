@@ -11,6 +11,10 @@ create table if not exists bahan_baku (
   satuan text not null default 'kg',
   harga_per_satuan numeric not null default 0,
   stok numeric not null default 0,
+  satuan_beli text default 'pack',
+  harga_beli numeric default 0,
+  isi_per_kemasan numeric default 1,
+  berat_per_isi numeric default 0,
   created_at timestamp with time zone default now()
 );
 

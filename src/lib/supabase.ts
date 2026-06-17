@@ -12,6 +12,10 @@ export type BahanBaku = {
   satuan: string;
   harga_per_satuan: number;
   stok: number;
+  satuan_beli: string;
+  harga_beli: number;
+  isi_per_kemasan: number;
+  berat_per_isi: number;
   created_at: string;
 };
 
