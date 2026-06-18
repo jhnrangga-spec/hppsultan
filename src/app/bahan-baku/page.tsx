@@ -157,8 +157,8 @@ export default function BahanBakuPage() {
         <div className="flex items-center gap-3">
           <Package className="w-8 h-8 text-gold" />
           <div>
-            <h1 className="text-3xl font-bold text-brand-dark">Bahan Baku</h1>
-            <p className="text-brand/60">Kelola bahan baku kopi Anda</p>
+            <h1 className="text-3xl font-bold text-foreground">Bahan Baku</h1>
+            <p className="text-white/60">Kelola bahan baku kopi Anda</p>
           </div>
         </div>
         <button
@@ -171,7 +171,7 @@ export default function BahanBakuPage() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -188,21 +188,21 @@ export default function BahanBakuPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-cream rounded-xl p-6 w-full max-w-lg shadow-xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-brand-dark">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editItem ? "Edit" : "Tambah"} Bahan Baku
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-brand/40 hover:text-brand"
+                className="text-white/40 hover:text-brand"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Nama Bahan
                 </label>
                 <input
@@ -210,12 +210,12 @@ export default function BahanBakuPage() {
                   required
                   value={form.nama}
                   onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="Contoh: KKP, Susu UHT, Gula"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Deskripsi
                 </label>
                 <textarea
@@ -223,20 +223,20 @@ export default function BahanBakuPage() {
                   onChange={(e) =>
                     setForm({ ...form, deskripsi: e.target.value })
                   }
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   rows={2}
                   placeholder="Keterangan bahan baku (opsional)"
                 />
               </div>
 
-              <div className="border border-brand/10 rounded-lg p-4 bg-cream/50 space-y-4">
-                <h3 className="text-sm font-semibold text-brand-dark">
+              <div className="border border-white/10 rounded-lg p-4 bg-cream/50 space-y-4">
+                <h3 className="text-sm font-semibold text-foreground">
                   Informasi Pembelian & Konversi
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-brand/70 mb-1">
+                    <label className="block text-sm font-medium text-white/70 mb-1">
                       Satuan Beli
                     </label>
                     <select
@@ -244,7 +244,7 @@ export default function BahanBakuPage() {
                       onChange={(e) =>
                         setForm({ ...form, satuan_beli: e.target.value })
                       }
-                      className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                     >
                       <option value="pack">Pack</option>
                       <option value="karton">Karton</option>
@@ -256,7 +256,7 @@ export default function BahanBakuPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-brand/70 mb-1">
+                    <label className="block text-sm font-medium text-white/70 mb-1">
                       Harga Beli / {form.satuan_beli}
                     </label>
                     <input
@@ -267,7 +267,7 @@ export default function BahanBakuPage() {
                       onChange={(e) =>
                         setForm({ ...form, harga_beli: e.target.value })
                       }
-                      className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                       placeholder="Rp"
                     />
                   </div>
@@ -275,7 +275,7 @@ export default function BahanBakuPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-brand/70 mb-1">
+                    <label className="block text-sm font-medium text-white/70 mb-1">
                       Isi per {form.satuan_beli} (pcs)
                     </label>
                     <input
@@ -287,12 +287,12 @@ export default function BahanBakuPage() {
                       onChange={(e) =>
                         setForm({ ...form, isi_per_kemasan: e.target.value })
                       }
-                      className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                       placeholder="Contoh: 24"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-brand/70 mb-1">
+                    <label className="block text-sm font-medium text-white/70 mb-1">
                       Berat / pcs
                     </label>
                     <div className="flex gap-2">
@@ -303,7 +303,7 @@ export default function BahanBakuPage() {
                         onChange={(e) =>
                           setForm({ ...form, berat_per_isi: e.target.value })
                         }
-                        className="flex-1 border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                        className="flex-1 border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                         placeholder="Contoh: 90"
                       />
                       <select
@@ -311,7 +311,7 @@ export default function BahanBakuPage() {
                         onChange={(e) =>
                           setForm({ ...form, satuan: e.target.value })
                         }
-                        className="w-20 border border-brand/20 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
+                        className="w-20 border border-white/20 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
                       >
                         <option value="g">g</option>
                         <option value="ml">ml</option>
@@ -319,14 +319,14 @@ export default function BahanBakuPage() {
                         <option value="liter">ltr</option>
                       </select>
                     </div>
-                    <p className="text-xs text-brand/40 mt-1">
+                    <p className="text-xs text-white/40 mt-1">
                       Kosongkan jika satuan resep = pcs
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-brand/70 mb-1">
+                  <label className="block text-sm font-medium text-white/70 mb-1">
                     Stok (jumlah {form.satuan_beli})
                   </label>
                   <input
@@ -335,13 +335,13 @@ export default function BahanBakuPage() {
                     step="0.01"
                     value={form.stok_kemasan}
                     onChange={(e) => setForm({ ...form, stok_kemasan: e.target.value })}
-                    className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                     placeholder="Contoh: 6"
                   />
                 </div>
 
                 {hargaBeli > 0 && (
-                  <div className="bg-white rounded-lg p-3 border border-brand/10 space-y-2">
+                  <div className="bg-cream rounded-lg p-3 border border-white/10 space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-brand/50">1 {form.satuan_beli}</span>
                       <ArrowRight className="w-3 h-3 text-brand/30" />
@@ -356,7 +356,7 @@ export default function BahanBakuPage() {
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-brand/60">
+                      <span className="text-sm text-white/60">
                         Harga per {satuanResep} (untuk resep):
                       </span>
                       <span className="font-bold text-lg text-gold">
@@ -365,7 +365,7 @@ export default function BahanBakuPage() {
                     </div>
                     {beratPerIsi > 0 && (
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-brand/60">Harga per pcs:</span>
+                        <span className="text-sm text-white/60">Harga per pcs:</span>
                         <span className="font-medium text-sm text-brand">
                           {formatRupiah(hargaBeli / isiKemasan)}
                         </span>
@@ -373,8 +373,8 @@ export default function BahanBakuPage() {
                     )}
                     {stokKemasan > 0 && (
                       <>
-                        <div className="border-t border-brand/10 pt-2 flex items-center justify-between">
-                          <span className="text-sm text-brand/60">
+                        <div className="border-t border-white/10 pt-2 flex items-center justify-between">
+                          <span className="text-sm text-white/60">
                             Stok total:
                           </span>
                           <span className="font-medium text-sm">
@@ -382,7 +382,7 @@ export default function BahanBakuPage() {
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-brand/60">Total pembelian:</span>
+                          <span className="text-sm text-white/60">Total pembelian:</span>
                           <span className="font-bold text-brand">
                             {formatRupiah(hargaBeli * stokKemasan)}
                           </span>
@@ -397,14 +397,14 @@ export default function BahanBakuPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 border border-brand/20 text-brand/70 px-4 py-2.5 rounded-lg hover:bg-brand/5"
+                  className="flex-1 border border-white/20 text-white/70 px-4 py-2.5 rounded-lg hover:bg-white/5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
+                  className="flex-1 bg-gold text-foreground font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
                 >
                   {submitting ? "Menyimpan..." : editItem ? "Simpan" : "Tambah"}
                 </button>
@@ -414,40 +414,40 @@ export default function BahanBakuPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+      <div className="bg-cream rounded-xl shadow-sm border border-white/10">
         {loading ? (
           <div className="flex items-center justify-center h-48">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand" />
           </div>
         ) : items.length === 0 ? (
-          <div className="p-12 text-center text-brand/40">
+          <div className="p-12 text-center text-white/40">
             <Package className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p>Belum ada bahan baku.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-brand-dark/5">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Nama
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Kemasan
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Harga/Kemasan
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Harga/Satuan Resep
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Stok
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Total Pembelian
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Aksi
                   </th>
                 </tr>
@@ -459,16 +459,16 @@ export default function BahanBakuPage() {
                     ? `1 ${item.satuan_beli || "pack"} = ${c.isi} pcs × ${c.berat}${item.satuan}`
                     : `1 ${item.satuan_beli || "pack"} = ${c.isi} pcs`;
                   return (
-                    <tr key={item.id} className="hover:bg-brand/5">
+                    <tr key={item.id} className="hover:bg-white/5">
                       <td className="px-6 py-4">
                         <span className="font-medium">{item.nama}</span>
                         {item.deskripsi && (
-                          <p className="text-xs text-brand/40 mt-0.5">
+                          <p className="text-xs text-white/40 mt-0.5">
                             {item.deskripsi}
                           </p>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-xs text-brand/60">
+                      <td className="px-6 py-4 text-xs text-white/60">
                         {kemasanLabel}
                       </td>
                       <td className="px-6 py-4 text-sm text-right">
@@ -479,7 +479,7 @@ export default function BahanBakuPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-right">
                         <span>{Math.round(c.jumlahKemasan)} {item.satuan_beli || "pack"}</span>
-                        <p className="text-xs text-brand/40">{item.stok} {item.satuan}</p>
+                        <p className="text-xs text-white/40">{item.stok} {item.satuan}</p>
                       </td>
                       <td className="px-6 py-4 text-sm text-right font-medium text-brand">
                         {formatRupiah(c.totalBeli)}
@@ -488,13 +488,13 @@ export default function BahanBakuPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openEdit(item)}
-                            className="p-2 text-brand/40 hover:text-brand rounded-lg hover:bg-brand/5"
+                            className="p-2 text-white/40 hover:text-brand rounded-lg hover:bg-white/5"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(item.id)}
-                            className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-50"
+                            className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-900/30"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -504,15 +504,15 @@ export default function BahanBakuPage() {
                   );
                 })}
               </tbody>
-              <tfoot className="bg-brand-dark/5">
+              <tfoot className="bg-white/5">
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-3 text-sm font-semibold text-brand-dark text-right"
+                    className="px-6 py-3 text-sm font-semibold text-foreground text-right"
                   >
                     TOTAL PEMBELIAN
                   </td>
-                  <td className="px-6 py-3 text-sm font-bold text-right text-brand-dark">
+                  <td className="px-6 py-3 text-sm font-bold text-right text-foreground">
                     {items.length} item
                   </td>
                   <td className="px-6 py-3 text-sm font-bold text-right text-brand">

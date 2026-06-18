@@ -157,8 +157,8 @@ export default function ProdukPage() {
         <div className="flex items-center gap-3">
           <Coffee className="w-8 h-8 text-gold" />
           <div>
-            <h1 className="text-3xl font-bold text-brand-dark">Produk</h1>
-            <p className="text-brand/60">Kelola produk kopi dan resepnya</p>
+            <h1 className="text-3xl font-bold text-foreground">Produk</h1>
+            <p className="text-white/60">Kelola produk kopi dan resepnya</p>
           </div>
         </div>
         <button
@@ -171,7 +171,7 @@ export default function ProdukPage() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -188,21 +188,21 @@ export default function ProdukPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl mx-4">
+          <div className="bg-cream rounded-xl p-6 w-full max-w-md shadow-xl mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-brand-dark">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editItem ? "Edit" : "Tambah"} Produk
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-brand/40 hover:text-brand"
+                className="text-white/40 hover:text-brand"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Nama Produk
                 </label>
                 <input
@@ -210,12 +210,12 @@ export default function ProdukPage() {
                   required
                   value={form.nama}
                   onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="Contoh: Kopi Sultan Arabica 200g"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Deskripsi
                 </label>
                 <textarea
@@ -223,13 +223,13 @@ export default function ProdukPage() {
                   onChange={(e) =>
                     setForm({ ...form, deskripsi: e.target.value })
                   }
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   rows={3}
                   placeholder="Deskripsi produk..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Harga Jual (Rp)
                 </label>
                 <input
@@ -240,7 +240,7 @@ export default function ProdukPage() {
                   onChange={(e) =>
                     setForm({ ...form, harga_jual: e.target.value })
                   }
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="0"
                 />
               </div>
@@ -248,14 +248,14 @@ export default function ProdukPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 border border-brand/20 text-brand/70 px-4 py-2.5 rounded-lg hover:bg-brand/5"
+                  className="flex-1 border border-white/20 text-white/70 px-4 py-2.5 rounded-lg hover:bg-white/5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
+                  className="flex-1 bg-gold text-foreground font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
                 >
                   {submitting
                     ? "Menyimpan..."
@@ -271,15 +271,15 @@ export default function ProdukPage() {
 
       {showResep && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl mx-4">
+          <div className="bg-cream rounded-xl p-6 w-full max-w-lg shadow-xl mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-brand-dark flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <ChefHat className="w-5 h-5 text-gold" />
                 Resep Produk
               </h2>
               <button
                 onClick={() => setShowResep(null)}
-                className="text-brand/40 hover:text-brand"
+                className="text-white/40 hover:text-brand"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -292,7 +292,7 @@ export default function ProdukPage() {
                 onChange={(e) =>
                   setResepForm({ ...resepForm, bahan_baku_id: e.target.value })
                 }
-                className="flex-1 border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
+                className="flex-1 border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
               >
                 <option value="">Pilih bahan...</option>
                 {bahanList.map((b) => (
@@ -309,19 +309,19 @@ export default function ProdukPage() {
                 onChange={(e) =>
                   setResepForm({ ...resepForm, jumlah: e.target.value })
                 }
-                className="w-24 border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
+                className="w-24 border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold text-sm"
                 placeholder="Jumlah"
               />
               <button
                 type="submit"
-                className="bg-gold text-brand-dark font-semibold px-4 py-2 rounded-lg hover:bg-gold-light transition-colors text-sm"
+                className="bg-gold text-foreground font-semibold px-4 py-2 rounded-lg hover:bg-gold-light transition-colors text-sm"
               >
                 Tambah
               </button>
             </form>
 
             {resepItems.length === 0 ? (
-              <p className="text-center text-brand/40 py-6">
+              <p className="text-center text-white/40 py-6">
                 Belum ada bahan dalam resep.
               </p>
             ) : (
@@ -335,7 +335,7 @@ export default function ProdukPage() {
                       <span className="font-medium">
                         {item.bahan_baku?.nama}
                       </span>
-                      <span className="text-sm text-brand/50 ml-2">
+                      <span className="text-sm text-white/50 ml-2">
                         {item.jumlah} {item.bahan_baku?.satuan}
                       </span>
                     </div>
@@ -355,7 +355,7 @@ export default function ProdukPage() {
                     </div>
                   </div>
                 ))}
-                <div className="text-right pt-2 font-semibold text-brand-dark">
+                <div className="text-right pt-2 font-semibold text-foreground">
                   Total Bahan:{" "}
                   {formatRupiah(
                     resepItems.reduce(
@@ -372,40 +372,40 @@ export default function ProdukPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+      <div className="bg-cream rounded-xl shadow-sm border border-white/10">
         {loading ? (
           <div className="flex items-center justify-center h-48">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand" />
           </div>
         ) : produkList.length === 0 ? (
-          <div className="p-12 text-center text-brand/40">
+          <div className="p-12 text-center text-white/40">
             <Coffee className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p>Belum ada produk.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-brand-dark/5">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Nama
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Deskripsi
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Harga Jual
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Aksi
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand/5">
                 {produkList.map((item) => (
-                  <tr key={item.id} className="hover:bg-brand/5">
+                  <tr key={item.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 font-medium">{item.nama}</td>
-                    <td className="px-6 py-4 text-sm text-brand/60">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {item.deskripsi || "-"}
                     </td>
                     <td className="px-6 py-4 text-sm text-right font-medium">
@@ -422,13 +422,13 @@ export default function ProdukPage() {
                         </button>
                         <button
                           onClick={() => openEdit(item)}
-                          className="p-2 text-brand/40 hover:text-brand rounded-lg hover:bg-brand/5"
+                          className="p-2 text-white/40 hover:text-brand rounded-lg hover:bg-white/5"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-50"
+                          className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-900/30"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

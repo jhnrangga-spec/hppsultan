@@ -117,17 +117,17 @@ export default function KalkulatorPage() {
       <div className="flex items-center gap-3 mb-8">
         <Calculator className="w-8 h-8 text-gold" />
         <div>
-          <h1 className="text-3xl font-bold text-brand-dark">
+          <h1 className="text-3xl font-bold text-foreground">
             Kalkulator HPP
           </h1>
-          <p className="text-brand/60">
+          <p className="text-white/60">
             Hitung Harga Pokok Produksi per unit
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -135,7 +135,7 @@ export default function KalkulatorPage() {
           </div>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-400 hover:text-red-600"
+            className="ml-auto text-red-400 hover:text-red-400"
           >
             <X className="w-4 h-4" />
           </button>
@@ -144,19 +144,19 @@ export default function KalkulatorPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-brand/10">
-            <h2 className="text-lg font-semibold text-brand-dark mb-4">
+          <div className="bg-cream rounded-xl p-6 shadow-sm border border-white/10">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Informasi Produksi
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Produk
                 </label>
                 <select
                   value={selectedProduk}
                   onChange={(e) => setSelectedProduk(e.target.value)}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
                 >
                   <option value="">Pilih produk...</option>
                   {produkList.map((p) => (
@@ -167,18 +167,18 @@ export default function KalkulatorPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Tanggal Produksi
                 </label>
                 <input
                   type="date"
                   value={tanggal}
                   onChange={(e) => setTanggal(e.target.value)}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Jumlah Produksi (unit)
                 </label>
                 <input
@@ -186,7 +186,7 @@ export default function KalkulatorPage() {
                   min="1"
                   value={jumlahProduksi}
                   onChange={(e) => setJumlahProduksi(e.target.value)}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="0"
                 />
               </div>
@@ -194,12 +194,12 @@ export default function KalkulatorPage() {
           </div>
 
           {selectedProduk && (
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-brand/10">
-              <h2 className="text-lg font-semibold text-brand-dark mb-4">
+            <div className="bg-cream rounded-xl p-6 shadow-sm border border-white/10">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
                 Biaya Bahan Baku (per Resep)
               </h2>
               {resepItems.length === 0 ? (
-                <p className="text-brand/40 text-center py-4">
+                <p className="text-white/40 text-center py-4">
                   Belum ada resep untuk produk ini. Tambah resep di halaman
                   Produk.
                 </p>
@@ -214,7 +214,7 @@ export default function KalkulatorPage() {
                         <span className="font-medium">
                           {item.bahan_baku?.nama}
                         </span>
-                        <span className="text-sm text-brand/50 ml-2">
+                        <span className="text-sm text-white/50 ml-2">
                           {item.jumlah} {item.bahan_baku?.satuan} x{" "}
                           {formatRupiah(
                             item.bahan_baku?.harga_per_satuan || 0
@@ -229,7 +229,7 @@ export default function KalkulatorPage() {
                       </span>
                     </div>
                   ))}
-                  <div className="text-right pt-2 text-sm text-brand/60">
+                  <div className="text-right pt-2 text-sm text-white/60">
                     Biaya bahan per unit:{" "}
                     {formatRupiah(
                       resepItems.reduce(
@@ -245,32 +245,32 @@ export default function KalkulatorPage() {
             </div>
           )}
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-brand/10">
-            <h2 className="text-lg font-semibold text-brand-dark mb-4">
+          <div className="bg-cream rounded-xl p-6 shadow-sm border border-white/10">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Biaya Tambahan
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Biaya Tenaga Kerja (Rp)
                 </label>
                 <input
                   type="number"
                   value={biayaTenagaKerja}
                   onChange={(e) => setBiayaTenagaKerja(e.target.value)}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="0"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Biaya Overhead (Rp)
                 </label>
                 <input
                   type="number"
                   value={biayaOverhead}
                   onChange={(e) => setBiayaOverhead(e.target.value)}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="Listrik, gas, sewa, dll"
                 />
               </div>
@@ -279,37 +279,37 @@ export default function KalkulatorPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-brand/10 sticky top-8">
-            <h2 className="text-lg font-semibold text-brand-dark mb-4">
+          <div className="bg-cream rounded-xl p-6 shadow-sm border border-white/10 sticky top-8">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Ringkasan HPP
             </h2>
 
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-brand/60">Total Bahan Baku</span>
+                <span className="text-white/60">Total Bahan Baku</span>
                 <span className="font-medium">
                   {formatRupiah(totalBiayaBahan)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-brand/60">Tenaga Kerja</span>
+                <span className="text-white/60">Tenaga Kerja</span>
                 <span className="font-medium">
                   {formatRupiah(tenagaKerja)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-brand/60">Overhead</span>
+                <span className="text-white/60">Overhead</span>
                 <span className="font-medium">{formatRupiah(overhead)}</span>
               </div>
-              <hr className="border-brand/10" />
+              <hr className="border-white/10" />
               <div className="flex justify-between">
-                <span className="font-semibold text-brand-dark">Total HPP</span>
+                <span className="font-semibold text-foreground">Total HPP</span>
                 <span className="font-bold text-lg text-brand">
                   {formatRupiah(totalHPP)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-brand-dark">
+                <span className="font-semibold text-foreground">
                   HPP per Unit
                 </span>
                 <span className="font-bold text-xl text-gold">
@@ -319,18 +319,18 @@ export default function KalkulatorPage() {
 
               {currentProduk && qty > 0 && (
                 <>
-                  <hr className="border-brand/10" />
+                  <hr className="border-white/10" />
                   <div className="flex justify-between text-sm">
-                    <span className="text-brand/60">Harga Jual</span>
+                    <span className="text-white/60">Harga Jual</span>
                     <span className="font-medium">
                       {formatRupiah(currentProduk.harga_jual)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-brand/60">Margin per Unit</span>
+                    <span className="text-white/60">Margin per Unit</span>
                     <span
                       className={`font-bold ${
-                        margin >= 0 ? "text-emerald-600" : "text-red-500"
+                        margin >= 0 ? "text-emerald-400" : "text-red-500"
                       }`}
                     >
                       {formatRupiah(margin)} ({marginPersen.toFixed(1)}%)
@@ -343,7 +343,7 @@ export default function KalkulatorPage() {
             <button
               onClick={handleSave}
               disabled={!selectedProduk || qty <= 0 || saving}
-              className="w-full mt-6 flex items-center justify-center gap-2 bg-gold text-brand-dark font-semibold px-4 py-3 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full mt-6 flex items-center justify-center gap-2 bg-gold text-foreground font-semibold px-4 py-3 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {saved ? (
                 <>

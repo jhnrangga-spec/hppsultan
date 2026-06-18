@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFF8E7;
-  --foreground: #3E2723;
-  --brand: #6B4226;
-  --brand-light: #8B6914;
-  --brand-dark: #3E2723;
-  --gold: #D4A017;
-  --gold-light: #F5D061;
-  --cream: #FFF8E7;
+  --background: #111111;
+  --foreground: #F5F5F5;
+  --brand: #FF6B00;
+  --brand-light: #FF8C38;
+  --brand-dark: #1A1A1A;
+  --gold: #FF8C00;
+  --gold-light: #FFB347;
+  --cream: #1E1E1E;
 }
 
 @theme inline {
@@ -28,6 +28,11 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+input, textarea, select {
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 input[type="number"]::-webkit-inner-spin-button,

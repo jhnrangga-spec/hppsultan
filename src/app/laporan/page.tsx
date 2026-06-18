@@ -355,27 +355,27 @@ export default function LaporanPage() {
       <div className="flex items-center gap-3 mb-8">
         <FileText className="w-8 h-8 text-gold" />
         <div>
-          <h1 className="text-3xl font-bold text-brand-dark">Laporan</h1>
-          <p className="text-brand/60">Cetak laporan HPP, stok, dan laba rugi</p>
+          <h1 className="text-3xl font-bold text-foreground">Laporan</h1>
+          <p className="text-white/60">Cetak laporan HPP, stok, dan laba rugi</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
             <p className="text-sm">{error}</p>
           </div>
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-400">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10 mb-6">
-        <div className="p-4 border-b border-brand/10 flex flex-wrap items-center gap-4">
-          <div className="flex gap-1 bg-brand-dark/5 rounded-lg p-1">
+      <div className="bg-cream rounded-xl shadow-sm border border-white/10 mb-6">
+        <div className="p-4 border-b border-white/10 flex flex-wrap items-center gap-4">
+          <div className="flex gap-1 bg-white/5 rounded-lg p-1">
             {reportTabs.map((tab) => (
               <button
                 key={tab.key}
@@ -383,7 +383,7 @@ export default function LaporanPage() {
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   reportType === tab.key
                     ? "bg-brand text-white"
-                    : "text-brand/60 hover:text-brand hover:bg-white"
+                    : "text-white/60 hover:text-brand hover:bg-cream"
                 }`}
               >
                 {tab.label}
@@ -393,25 +393,25 @@ export default function LaporanPage() {
 
           {reportType !== "stok" && reportType !== "aset" && (
             <div className="flex items-center gap-2 ml-auto">
-              <label className="text-sm text-brand/60">Dari:</label>
+              <label className="text-sm text-white/60">Dari:</label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="border border-brand/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
+                className="border border-white/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
               />
-              <label className="text-sm text-brand/60">Sampai:</label>
+              <label className="text-sm text-white/60">Sampai:</label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="border border-brand/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
+                className="border border-white/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
               />
             </div>
           )}
         </div>
 
-        <div className="p-4 flex gap-3 border-b border-brand/10">
+        <div className="p-4 flex gap-3 border-b border-white/10">
           <button
             onClick={exportPDF}
             disabled={loading}
@@ -452,26 +452,26 @@ type HPPData = { rows: HPPRow[]; totalHPP: number; totalUnit: number };
 
 function HPPPreview({ data }: { data: HPPData }) {
   if (data.rows.length === 0) {
-    return <p className="text-center text-brand/40 py-8">Tidak ada data produksi pada periode ini.</p>;
+    return <p className="text-center text-white/40 py-8">Tidak ada data produksi pada periode ini.</p>;
   }
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-brand-dark/5">
+        <thead className="bg-white/5">
           <tr>
-            <th className="text-left px-4 py-2 font-medium text-brand/70">Tanggal</th>
-            <th className="text-left px-4 py-2 font-medium text-brand/70">Produk</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Qty</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Bahan Baku</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Tenaga Kerja</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Overhead</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Total HPP</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">HPP/Unit</th>
+            <th className="text-left px-4 py-2 font-medium text-white/70">Tanggal</th>
+            <th className="text-left px-4 py-2 font-medium text-white/70">Produk</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Qty</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Bahan Baku</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Tenaga Kerja</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Overhead</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Total HPP</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">HPP/Unit</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-brand/5">
           {data.rows.map((r, i) => (
-            <tr key={i} className="hover:bg-brand/5">
+            <tr key={i} className="hover:bg-white/5">
               <td className="px-4 py-2">{r.tanggal}</td>
               <td className="px-4 py-2 font-medium">{r.produk}</td>
               <td className="px-4 py-2 text-right">{r.jumlah}</td>
@@ -483,7 +483,7 @@ function HPPPreview({ data }: { data: HPPData }) {
             </tr>
           ))}
         </tbody>
-        <tfoot className="bg-brand-dark/5">
+        <tfoot className="bg-white/5">
           <tr>
             <td colSpan={2} className="px-4 py-2 font-semibold text-right">TOTAL</td>
             <td className="px-4 py-2 text-right font-bold">{data.totalUnit}</td>
@@ -499,38 +499,38 @@ function HPPPreview({ data }: { data: HPPData }) {
 
 function StokPreview({ data }: { data: { nama: string; satuan_beli: string; kemasan: string; hargaKemasan: number; hargaSatuan: number; satuan: string; stokKemasan: number; stokResep: number; totalBeli: number }[] }) {
   if (data.length === 0) {
-    return <p className="text-center text-brand/40 py-8">Belum ada data bahan baku.</p>;
+    return <p className="text-center text-white/40 py-8">Belum ada data bahan baku.</p>;
   }
   const totalBeli = data.reduce((s, r) => s + r.totalBeli, 0);
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-brand-dark/5">
+        <thead className="bg-white/5">
           <tr>
-            <th className="text-left px-4 py-2 font-medium text-brand/70">Nama</th>
-            <th className="text-left px-4 py-2 font-medium text-brand/70">Kemasan</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Harga/Kemasan</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Harga/Satuan</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Stok</th>
-            <th className="text-right px-4 py-2 font-medium text-brand/70">Total Pembelian</th>
+            <th className="text-left px-4 py-2 font-medium text-white/70">Nama</th>
+            <th className="text-left px-4 py-2 font-medium text-white/70">Kemasan</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Harga/Kemasan</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Harga/Satuan</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Stok</th>
+            <th className="text-right px-4 py-2 font-medium text-white/70">Total Pembelian</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-brand/5">
           {data.map((r, i) => (
-            <tr key={i} className="hover:bg-brand/5">
+            <tr key={i} className="hover:bg-white/5">
               <td className="px-4 py-2 font-medium">{r.nama}</td>
-              <td className="px-4 py-2 text-xs text-brand/60">{r.kemasan}</td>
+              <td className="px-4 py-2 text-xs text-white/60">{r.kemasan}</td>
               <td className="px-4 py-2 text-right">{formatRupiah(r.hargaKemasan)}/{r.satuan_beli}</td>
               <td className="px-4 py-2 text-right font-semibold text-gold">{formatRupiah(r.hargaSatuan)}/{r.satuan}</td>
               <td className="px-4 py-2 text-right">
                 {r.stokKemasan} {r.satuan_beli}
-                <span className="text-xs text-brand/40 block">{r.stokResep} {r.satuan}</span>
+                <span className="text-xs text-white/40 block">{r.stokResep} {r.satuan}</span>
               </td>
               <td className="px-4 py-2 text-right font-medium text-brand">{formatRupiah(r.totalBeli)}</td>
             </tr>
           ))}
         </tbody>
-        <tfoot className="bg-brand-dark/5">
+        <tfoot className="bg-white/5">
           <tr>
             <td colSpan={4} className="px-4 py-2 font-semibold text-right">TOTAL</td>
             <td className="px-4 py-2 text-right font-bold">{data.length} item</td>
@@ -558,17 +558,17 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-emerald-50 rounded-xl p-5 border border-emerald-200">
-          <p className="text-sm text-emerald-600">Pendapatan</p>
-          <p className="text-2xl font-bold text-emerald-700">{formatRupiah(data.pendapatan)}</p>
+        <div className="bg-emerald-900/30 rounded-xl p-5 border border-emerald-700">
+          <p className="text-sm text-emerald-400">Pendapatan</p>
+          <p className="text-2xl font-bold text-emerald-300">{formatRupiah(data.pendapatan)}</p>
         </div>
-        <div className="bg-red-50 rounded-xl p-5 border border-red-200">
-          <p className="text-sm text-red-600">Total HPP + Penyusutan</p>
-          <p className="text-2xl font-bold text-red-700">{formatRupiah(data.totalHPP + data.penyusutan)}</p>
+        <div className="bg-red-900/30 rounded-xl p-5 border border-red-700">
+          <p className="text-sm text-red-400">Total HPP + Penyusutan</p>
+          <p className="text-2xl font-bold text-red-300">{formatRupiah(data.totalHPP + data.penyusutan)}</p>
         </div>
-        <div className={`rounded-xl p-5 border ${data.labaBersih >= 0 ? "bg-gold-light/30 border-amber-300" : "bg-red-100 border-red-300"}`}>
-          <p className="text-sm text-brand/60">Laba Bersih</p>
-          <p className={`text-2xl font-bold ${data.labaBersih >= 0 ? "text-brand-dark" : "text-red-700"}`}>
+        <div className={`rounded-xl p-5 border ${data.labaBersih >= 0 ? "bg-gold-light/30 border-amber-700" : "bg-red-900/30 border-red-700"}`}>
+          <p className="text-sm text-white/60">Laba Bersih</p>
+          <p className={`text-2xl font-bold ${data.labaBersih >= 0 ? "text-foreground" : "text-red-300"}`}>
             {formatRupiah(data.labaBersih)}
           </p>
         </div>
@@ -577,12 +577,12 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <tbody>
-            <tr className="bg-emerald-50">
+            <tr className="bg-emerald-900/30">
               <td className="px-4 py-3 font-semibold">Pendapatan (Harga Jual × Unit)</td>
-              <td className="px-4 py-3 text-right font-bold text-emerald-700">{formatRupiah(data.pendapatan)}</td>
+              <td className="px-4 py-3 text-right font-bold text-emerald-300">{formatRupiah(data.pendapatan)}</td>
             </tr>
-            <tr className="bg-brand-dark/5">
-              <td colSpan={2} className="px-4 py-2 font-semibold text-brand/70">Harga Pokok Produksi</td>
+            <tr className="bg-white/5">
+              <td colSpan={2} className="px-4 py-2 font-semibold text-white/70">Harga Pokok Produksi</td>
             </tr>
             <tr>
               <td className="px-4 py-2 pl-8">Biaya Bahan Baku</td>
@@ -596,11 +596,11 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
               <td className="px-4 py-2 pl-8">Biaya Overhead</td>
               <td className="px-4 py-2 text-right">{formatRupiah(data.totalOH)}</td>
             </tr>
-            <tr className="border-t border-brand/10">
+            <tr className="border-t border-white/10">
               <td className="px-4 py-2 font-semibold">Total HPP</td>
-              <td className="px-4 py-2 text-right font-bold text-red-600">{formatRupiah(data.totalHPP)}</td>
+              <td className="px-4 py-2 text-right font-bold text-red-400">{formatRupiah(data.totalHPP)}</td>
             </tr>
-            <tr className="bg-amber-50 border-t border-brand/10">
+            <tr className="bg-amber-900/30 border-t border-white/10">
               <td className="px-4 py-3 font-bold">LABA KOTOR</td>
               <td className="px-4 py-3 text-right font-bold text-lg">{formatRupiah(data.labaKotor)}</td>
             </tr>
@@ -608,9 +608,9 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
               <td className="px-4 py-2 pl-8">Beban Penyusutan Aset</td>
               <td className="px-4 py-2 text-right">{formatRupiah(data.penyusutan)}</td>
             </tr>
-            <tr className={`border-t-2 border-brand/20 ${data.labaBersih >= 0 ? "bg-emerald-50" : "bg-red-50"}`}>
+            <tr className={`border-t-2 border-white/20 ${data.labaBersih >= 0 ? "bg-emerald-900/30" : "bg-red-900/30"}`}>
               <td className="px-4 py-3 font-bold text-lg">LABA BERSIH</td>
-              <td className={`px-4 py-3 text-right font-bold text-xl ${data.labaBersih >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+              <td className={`px-4 py-3 text-right font-bold text-xl ${data.labaBersih >= 0 ? "text-emerald-300" : "text-red-300"}`}>
                 {formatRupiah(data.labaBersih)}
               </td>
             </tr>
@@ -620,29 +620,29 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
 
       {perProduk.length > 0 && (
         <>
-          <h3 className="text-sm font-semibold text-brand-dark mt-4">Detail per Produk</h3>
+          <h3 className="text-sm font-semibold text-foreground mt-4">Detail per Produk</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-brand-dark/5">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="text-left px-4 py-2 font-medium text-brand/70">Produk</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">Harga Jual</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">Unit</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">Pendapatan</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">HPP</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">Laba</th>
-                  <th className="text-right px-4 py-2 font-medium text-brand/70">Margin</th>
+                  <th className="text-left px-4 py-2 font-medium text-white/70">Produk</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">Harga Jual</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">Unit</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">Pendapatan</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">HPP</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">Laba</th>
+                  <th className="text-right px-4 py-2 font-medium text-white/70">Margin</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand/5">
                 {perProduk.map((p, i) => (
-                  <tr key={i} className="hover:bg-brand/5">
+                  <tr key={i} className="hover:bg-white/5">
                     <td className="px-4 py-2 font-medium">{p.nama}</td>
                     <td className="px-4 py-2 text-right">{formatRupiah(p.hargaJual)}</td>
                     <td className="px-4 py-2 text-right">{p.totalUnit}</td>
                     <td className="px-4 py-2 text-right">{formatRupiah(p.pendapatan)}</td>
                     <td className="px-4 py-2 text-right">{formatRupiah(p.totalHPP)}</td>
-                    <td className={`px-4 py-2 text-right font-semibold ${p.laba >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    <td className={`px-4 py-2 text-right font-semibold ${p.laba >= 0 ? "text-emerald-400" : "text-red-400"}`}>
                       {formatRupiah(p.laba)}
                     </td>
                     <td className="px-4 py-2 text-right">
@@ -664,66 +664,66 @@ type AsetData = { rows: AsetRow[]; totalModal: number; totalNilaiSekarang: numbe
 
 function AsetPreview({ data }: { data: AsetData }) {
   if (data.rows.length === 0) {
-    return <p className="text-center text-brand/40 py-8">Belum ada data aset.</p>;
+    return <p className="text-center text-white/40 py-8">Belum ada data aset.</p>;
   }
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-amber-50 rounded-xl p-5 border border-amber-200">
-          <p className="text-sm text-amber-600">Total Modal Awal</p>
-          <p className="text-2xl font-bold text-amber-700">{formatRupiah(data.totalModal)}</p>
+        <div className="bg-amber-900/30 rounded-xl p-5 border border-amber-700">
+          <p className="text-sm text-amber-400">Total Modal Awal</p>
+          <p className="text-2xl font-bold text-amber-300">{formatRupiah(data.totalModal)}</p>
         </div>
-        <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
-          <p className="text-sm text-blue-600">Nilai Sekarang</p>
-          <p className="text-2xl font-bold text-blue-700">{formatRupiah(data.totalNilaiSekarang)}</p>
+        <div className="bg-blue-900/30 rounded-xl p-5 border border-blue-700">
+          <p className="text-sm text-blue-400">Nilai Sekarang</p>
+          <p className="text-2xl font-bold text-blue-300">{formatRupiah(data.totalNilaiSekarang)}</p>
         </div>
-        <div className="bg-red-50 rounded-xl p-5 border border-red-200">
-          <p className="text-sm text-red-600">Akum. Penyusutan</p>
-          <p className="text-2xl font-bold text-red-700">{formatRupiah(data.totalAkumulasi)}</p>
+        <div className="bg-red-900/30 rounded-xl p-5 border border-red-700">
+          <p className="text-sm text-red-400">Akum. Penyusutan</p>
+          <p className="text-2xl font-bold text-red-300">{formatRupiah(data.totalAkumulasi)}</p>
         </div>
-        <div className="bg-purple-50 rounded-xl p-5 border border-purple-200">
-          <p className="text-sm text-purple-600">Penyusutan/Bulan</p>
-          <p className="text-2xl font-bold text-purple-700">{formatRupiah(data.totalPenyusutanBulan)}</p>
+        <div className="bg-purple-900/30 rounded-xl p-5 border border-purple-700">
+          <p className="text-sm text-purple-400">Penyusutan/Bulan</p>
+          <p className="text-2xl font-bold text-purple-300">{formatRupiah(data.totalPenyusutanBulan)}</p>
         </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-brand-dark/5">
+          <thead className="bg-white/5">
             <tr>
-              <th className="text-left px-4 py-2 font-medium text-brand/70">Nama</th>
-              <th className="text-left px-4 py-2 font-medium text-brand/70">Kategori</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Qty</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Total Harga</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Umur (th)</th>
-              <th className="text-left px-4 py-2 font-medium text-brand/70">Tgl Beli</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Penyusutan/Bln</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Akum. Penyusutan</th>
-              <th className="text-right px-4 py-2 font-medium text-brand/70">Nilai Sekarang</th>
+              <th className="text-left px-4 py-2 font-medium text-white/70">Nama</th>
+              <th className="text-left px-4 py-2 font-medium text-white/70">Kategori</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Qty</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Total Harga</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Umur (th)</th>
+              <th className="text-left px-4 py-2 font-medium text-white/70">Tgl Beli</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Penyusutan/Bln</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Akum. Penyusutan</th>
+              <th className="text-right px-4 py-2 font-medium text-white/70">Nilai Sekarang</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand/5">
             {data.rows.map((r, i) => (
-              <tr key={i} className="hover:bg-brand/5">
+              <tr key={i} className="hover:bg-white/5">
                 <td className="px-4 py-2 font-medium">{r.nama}</td>
-                <td className="px-4 py-2 text-xs text-brand/60">{r.kategori}</td>
+                <td className="px-4 py-2 text-xs text-white/60">{r.kategori}</td>
                 <td className="px-4 py-2 text-right">{r.jumlah}</td>
                 <td className="px-4 py-2 text-right">{formatRupiah(r.totalHarga)}</td>
                 <td className="px-4 py-2 text-right">{r.umurEkonomis}</td>
                 <td className="px-4 py-2 text-xs">{r.tanggalBeli}</td>
                 <td className="px-4 py-2 text-right">{formatRupiah(r.penyusutanPerBulan)}</td>
-                <td className="px-4 py-2 text-right text-red-600">{formatRupiah(r.totalPenyusutan)}</td>
+                <td className="px-4 py-2 text-right text-red-400">{formatRupiah(r.totalPenyusutan)}</td>
                 <td className="px-4 py-2 text-right font-semibold text-brand">{formatRupiah(r.nilaiSekarang)}</td>
               </tr>
             ))}
           </tbody>
-          <tfoot className="bg-brand-dark/5">
+          <tfoot className="bg-white/5">
             <tr>
               <td colSpan={3} className="px-4 py-2 font-semibold text-right">TOTAL</td>
               <td className="px-4 py-2 text-right font-bold">{formatRupiah(data.totalModal)}</td>
               <td colSpan={2} />
               <td className="px-4 py-2 text-right font-bold">{formatRupiah(data.totalPenyusutanBulan)}</td>
-              <td className="px-4 py-2 text-right font-bold text-red-600">{formatRupiah(data.totalAkumulasi)}</td>
+              <td className="px-4 py-2 text-right font-bold text-red-400">{formatRupiah(data.totalAkumulasi)}</td>
               <td className="px-4 py-2 text-right font-bold text-brand">{formatRupiah(data.totalNilaiSekarang)}</td>
             </tr>
           </tfoot>

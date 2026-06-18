@@ -50,15 +50,15 @@ export default function ProduksiPage() {
       <div className="flex items-center gap-3 mb-8">
         <ClipboardList className="w-8 h-8 text-gold" />
         <div>
-          <h1 className="text-3xl font-bold text-brand-dark">
+          <h1 className="text-3xl font-bold text-foreground">
             Riwayat Produksi
           </h1>
-          <p className="text-brand/60">Semua catatan produksi dan HPP</p>
+          <p className="text-white/60">Semua catatan produksi dan HPP</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -75,18 +75,18 @@ export default function ProduksiPage() {
 
       {!loading && items.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
-            <p className="text-sm text-brand/50">Total Batch</p>
-            <p className="text-2xl font-bold text-brand-dark">{items.length}</p>
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
+            <p className="text-sm text-white/50">Total Batch</p>
+            <p className="text-2xl font-bold text-foreground">{items.length}</p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
-            <p className="text-sm text-brand/50">Total Unit</p>
-            <p className="text-2xl font-bold text-brand-dark">
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
+            <p className="text-sm text-white/50">Total Unit</p>
+            <p className="text-2xl font-bold text-foreground">
               {totalProduksi}
             </p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
-            <p className="text-sm text-brand/50">Total HPP</p>
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
+            <p className="text-sm text-white/50">Total HPP</p>
             <p className="text-2xl font-bold text-brand">
               {formatRupiah(totalHPP)}
             </p>
@@ -94,13 +94,13 @@ export default function ProduksiPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+      <div className="bg-cream rounded-xl shadow-sm border border-white/10">
         {loading ? (
           <div className="flex items-center justify-center h-48">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand" />
           </div>
         ) : items.length === 0 ? (
-          <div className="p-12 text-center text-brand/40">
+          <div className="p-12 text-center text-white/40">
             <ClipboardList className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p>Belum ada riwayat produksi.</p>
             <p className="text-sm mt-1">
@@ -110,40 +110,40 @@ export default function ProduksiPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-brand-dark/5">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Tanggal
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Produk
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Jumlah
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Bahan Baku
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Tenaga Kerja
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Overhead
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Total HPP
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     HPP/Unit
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Aksi
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand/5">
                 {items.map((p) => (
-                  <tr key={p.id} className="hover:bg-brand/5">
+                  <tr key={p.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 text-sm">
                       {formatDate(p.tanggal)}
                     </td>
@@ -171,7 +171,7 @@ export default function ProduksiPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(p.id)}
-                        className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-50"
+                        className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-900/30"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

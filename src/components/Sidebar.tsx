@@ -80,7 +80,7 @@ export default function Sidebar() {
                 onClick={() => setOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   isActive
-                    ? "bg-gold text-brand-dark font-semibold"
+                    ? "bg-brand text-white font-semibold"
                     : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >

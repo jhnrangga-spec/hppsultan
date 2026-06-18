@@ -175,10 +175,10 @@ export default function AsetPage() {
         <div className="flex items-center gap-3">
           <Landmark className="w-8 h-8 text-gold" />
           <div>
-            <h1 className="text-3xl font-bold text-brand-dark">
+            <h1 className="text-3xl font-bold text-foreground">
               Aset Modal Awal
             </h1>
-            <p className="text-brand/60">
+            <p className="text-white/60">
               Kelola peralatan, mesin, dan investasi awal
             </p>
           </div>
@@ -193,7 +193,7 @@ export default function AsetPage() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -201,7 +201,7 @@ export default function AsetPage() {
           </div>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-400 hover:text-red-600"
+            className="ml-auto text-red-400 hover:text-red-400"
           >
             <X className="w-4 h-4" />
           </button>
@@ -210,47 +210,47 @@ export default function AsetPage() {
 
       {!loading && items.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
             <div className="flex items-center gap-2 mb-2">
               <Wallet className="w-5 h-5 text-gold" />
-              <p className="text-sm text-brand/50">Total Modal Awal</p>
+              <p className="text-sm text-white/50">Total Modal Awal</p>
             </div>
-            <p className="text-2xl font-bold text-brand-dark">
+            <p className="text-2xl font-bold text-foreground">
               {formatRupiah(totalModal)}
             </p>
-            <p className="text-xs text-brand/40 mt-1">{totalItem} item aset</p>
+            <p className="text-xs text-white/40 mt-1">{totalItem} item aset</p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-5 h-5 text-emerald-500" />
-              <p className="text-sm text-brand/50">Nilai Sekarang</p>
+              <p className="text-sm text-white/50">Nilai Sekarang</p>
             </div>
-            <p className="text-2xl font-bold text-emerald-600">
+            <p className="text-2xl font-bold text-emerald-400">
               {formatRupiah(nilaiSekarang)}
             </p>
-            <p className="text-xs text-brand/40 mt-1">
+            <p className="text-xs text-white/40 mt-1">
               Setelah penyusutan
             </p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
             <div className="flex items-center gap-2 mb-2">
               <TrendingDown className="w-5 h-5 text-red-400" />
-              <p className="text-sm text-brand/50">Total Penyusutan</p>
+              <p className="text-sm text-white/50">Total Penyusutan</p>
             </div>
             <p className="text-2xl font-bold text-red-500">
               {formatRupiah(totalPenyusutan)}
             </p>
-            <p className="text-xs text-brand/40 mt-1">Akumulasi s/d hari ini</p>
+            <p className="text-xs text-white/40 mt-1">Akumulasi s/d hari ini</p>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-brand/10">
+          <div className="bg-cream rounded-xl p-5 shadow-sm border border-white/10">
             <div className="flex items-center gap-2 mb-2">
               <TrendingDown className="w-5 h-5 text-amber-500" />
-              <p className="text-sm text-brand/50">Penyusutan/Bulan</p>
+              <p className="text-sm text-white/50">Penyusutan/Bulan</p>
             </div>
-            <p className="text-2xl font-bold text-amber-600">
+            <p className="text-2xl font-bold text-amber-400">
               {formatRupiah(penyusutanPerBulan)}
             </p>
-            <p className="text-xs text-brand/40 mt-1">
+            <p className="text-xs text-white/40 mt-1">
               Beban overhead bulanan
             </p>
           </div>
@@ -259,21 +259,21 @@ export default function AsetPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-cream rounded-xl p-6 w-full max-w-lg shadow-xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-brand-dark">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editItem ? "Edit" : "Tambah"} Aset
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-brand/40 hover:text-brand"
+                className="text-white/40 hover:text-brand"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Nama Aset
                 </label>
                 <input
@@ -281,12 +281,12 @@ export default function AsetPage() {
                   required
                   value={form.nama}
                   onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   placeholder="Contoh: Mesin Roasting 5kg"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Kategori
                 </label>
                 <select
@@ -294,7 +294,7 @@ export default function AsetPage() {
                   onChange={(e) =>
                     setForm({ ...form, kategori: e.target.value })
                   }
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                 >
                   {KATEGORI_LIST.map((k) => (
                     <option key={k} value={k}>
@@ -305,7 +305,7 @@ export default function AsetPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-brand/70 mb-1">
+                  <label className="block text-sm font-medium text-white/70 mb-1">
                     Jumlah
                   </label>
                   <input
@@ -316,11 +316,11 @@ export default function AsetPage() {
                     onChange={(e) =>
                       setForm({ ...form, jumlah: e.target.value })
                     }
-                    className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-brand/70 mb-1">
+                  <label className="block text-sm font-medium text-white/70 mb-1">
                     Harga per Unit (Rp)
                   </label>
                   <input
@@ -331,14 +331,14 @@ export default function AsetPage() {
                     onChange={(e) =>
                       setForm({ ...form, harga_satuan: e.target.value })
                     }
-                    className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                     placeholder="0"
                   />
                 </div>
               </div>
               {form.jumlah && form.harga_satuan && (
                 <div className="bg-cream rounded-lg px-4 py-3 text-sm">
-                  <span className="text-brand/60">Total: </span>
+                  <span className="text-white/60">Total: </span>
                   <span className="font-bold text-brand">
                     {formatRupiah(
                       parseInt(form.jumlah) * parseFloat(form.harga_satuan)
@@ -348,7 +348,7 @@ export default function AsetPage() {
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-brand/70 mb-1">
+                  <label className="block text-sm font-medium text-white/70 mb-1">
                     Umur Ekonomis (tahun)
                   </label>
                   <input
@@ -359,11 +359,11 @@ export default function AsetPage() {
                     onChange={(e) =>
                       setForm({ ...form, umur_ekonomis: e.target.value })
                     }
-                    className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-brand/70 mb-1">
+                  <label className="block text-sm font-medium text-white/70 mb-1">
                     Tanggal Beli
                   </label>
                   <input
@@ -373,13 +373,13 @@ export default function AsetPage() {
                     onChange={(e) =>
                       setForm({ ...form, tanggal_beli: e.target.value })
                     }
-                    className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   />
                 </div>
               </div>
               {form.harga_satuan && form.jumlah && form.umur_ekonomis && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm">
-                  <p className="text-amber-700">
+                <div className="bg-amber-900/30 border border-amber-200 rounded-lg px-4 py-3 text-sm">
+                  <p className="text-amber-300">
                     <span className="font-medium">Penyusutan: </span>
                     {formatRupiah(
                       (parseInt(form.jumlah) * parseFloat(form.harga_satuan)) /
@@ -391,7 +391,7 @@ export default function AsetPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-brand/70 mb-1">
+                <label className="block text-sm font-medium text-white/70 mb-1">
                   Keterangan
                 </label>
                 <textarea
@@ -399,7 +399,7 @@ export default function AsetPage() {
                   onChange={(e) =>
                     setForm({ ...form, keterangan: e.target.value })
                   }
-                  className="w-full border border-brand/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="w-full border border-white/20 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
                   rows={2}
                   placeholder="Catatan tambahan (opsional)"
                 />
@@ -408,14 +408,14 @@ export default function AsetPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 border border-brand/20 text-brand/70 px-4 py-2.5 rounded-lg hover:bg-brand/5"
+                  className="flex-1 border border-white/20 text-white/70 px-4 py-2.5 rounded-lg hover:bg-white/5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-gold text-brand-dark font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
+                  className="flex-1 bg-gold text-foreground font-semibold px-4 py-2.5 rounded-lg hover:bg-gold-light transition-colors disabled:opacity-50"
                 >
                   {submitting ? "Menyimpan..." : editItem ? "Simpan" : "Tambah"}
                 </button>
@@ -425,13 +425,13 @@ export default function AsetPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-brand/10">
+      <div className="bg-cream rounded-xl shadow-sm border border-white/10">
         {loading ? (
           <div className="flex items-center justify-center h-48">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand" />
           </div>
         ) : items.length === 0 ? (
-          <div className="p-12 text-center text-brand/40">
+          <div className="p-12 text-center text-white/40">
             <Landmark className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p>Belum ada data aset.</p>
             <p className="text-sm mt-1">
@@ -441,49 +441,49 @@ export default function AsetPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-brand-dark/5">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Nama Aset
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Kategori
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Qty
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Harga Satuan
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Total
                   </th>
-                  <th className="text-center px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-center px-6 py-3 text-sm font-medium text-white/70">
                     Umur
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Penyusutan/Bln
                   </th>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                     Tgl Beli
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                  <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                     Aksi
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand/5">
                 {items.map((item) => (
-                  <tr key={item.id} className="hover:bg-brand/5">
+                  <tr key={item.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 font-medium">
                       {item.nama}
                       {item.keterangan && (
-                        <p className="text-xs text-brand/40 mt-0.5">
+                        <p className="text-xs text-white/40 mt-0.5">
                           {item.keterangan}
                         </p>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-brand/60">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {item.kategori}
                     </td>
                     <td className="px-6 py-4 text-sm text-right">
@@ -498,7 +498,7 @@ export default function AsetPage() {
                     <td className="px-6 py-4 text-sm text-center">
                       {item.umur_ekonomis} thn
                     </td>
-                    <td className="px-6 py-4 text-sm text-right text-amber-600">
+                    <td className="px-6 py-4 text-sm text-right text-amber-400">
                       {formatRupiah(item.total_harga / item.umur_ekonomis / 12)}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -508,13 +508,13 @@ export default function AsetPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openEdit(item)}
-                          className="p-2 text-brand/40 hover:text-brand rounded-lg hover:bg-brand/5"
+                          className="p-2 text-white/40 hover:text-brand rounded-lg hover:bg-white/5"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-50"
+                          className="p-2 text-red-300 hover:text-red-500 rounded-lg hover:bg-red-900/30"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -523,11 +523,11 @@ export default function AsetPage() {
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="bg-brand-dark/5">
+              <tfoot className="bg-white/5">
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-3 text-sm font-semibold text-brand-dark text-right"
+                    className="px-6 py-3 text-sm font-semibold text-foreground text-right"
                   >
                     TOTAL MODAL AWAL
                   </td>
@@ -535,7 +535,7 @@ export default function AsetPage() {
                     {formatRupiah(totalModal)}
                   </td>
                   <td />
-                  <td className="px-6 py-3 text-sm font-bold text-amber-600 text-right">
+                  <td className="px-6 py-3 text-sm font-bold text-amber-400 text-right">
                     {formatRupiah(penyusutanPerBulan)}
                   </td>
                   <td colSpan={2} />

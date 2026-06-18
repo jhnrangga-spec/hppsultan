@@ -73,37 +73,37 @@ export default function Dashboard() {
       label: "Total Modal Awal",
       value: formatRupiah(totalModal),
       icon: Landmark,
-      color: "bg-gold-light/30 text-amber-700",
+      color: "bg-orange-900/30 text-amber-300",
     },
     {
       label: "Penyusutan/Bulan",
       value: formatRupiah(penyusutanPerBulan),
       icon: Wallet,
-      color: "bg-red-100 text-red-600",
+      color: "bg-red-900/30 text-red-400",
     },
     {
       label: "Total Bahan Baku",
       value: bahanCount.toString(),
       icon: Package,
-      color: "bg-amber-100 text-amber-700",
+      color: "bg-amber-900/30 text-amber-300",
     },
     {
       label: "Total Produk",
       value: produkCount.toString(),
       icon: Coffee,
-      color: "bg-emerald-100 text-emerald-700",
+      color: "bg-emerald-900/30 text-emerald-300",
     },
     {
       label: "Unit Diproduksi",
       value: totalProduksi.toString(),
       icon: TrendingUp,
-      color: "bg-blue-100 text-blue-700",
+      color: "bg-blue-900/30 text-blue-300",
     },
     {
       label: "Rata-rata HPP/Unit",
       value: formatRupiah(avgHPP),
       icon: DollarSign,
-      color: "bg-purple-100 text-purple-700",
+      color: "bg-purple-900/30 text-purple-300",
     },
   ];
 
@@ -120,13 +120,13 @@ export default function Dashboard() {
       <div className="flex items-center gap-3 mb-8">
         <Crown className="w-8 h-8 text-gold" />
         <div>
-          <h1 className="text-3xl font-bold text-brand-dark">Dashboard</h1>
-          <p className="text-brand/60">Sistem HPP Kopi Brand Sultan</p>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-white/60">Sistem HPP Kopi Brand Sultan</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+        <div className="mb-6 bg-red-900/30 border border-red-200 text-red-300 px-4 py-3 rounded-lg flex items-start gap-3">
           <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-medium">Error</p>
@@ -134,7 +134,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-400 hover:text-red-600"
+            className="ml-auto text-red-400 hover:text-red-400"
           >
             <X className="w-4 h-4" />
           </button>
@@ -147,29 +147,29 @@ export default function Dashboard() {
           return (
             <div
               key={stat.label}
-              className="bg-white rounded-xl p-6 shadow-sm border border-brand/10"
+              className="bg-cream rounded-xl p-6 shadow-sm border border-white/10"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-lg ${stat.color}`}>
                   <Icon className="w-6 h-6" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-brand-dark">{stat.value}</p>
-              <p className="text-sm text-brand/50 mt-1">{stat.label}</p>
+              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-sm text-white/50 mt-1">{stat.label}</p>
             </div>
           );
         })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-brand/10">
-          <div className="p-6 border-b border-brand/10">
-            <h2 className="text-lg font-semibold text-brand-dark">
+        <div className="bg-cream rounded-xl shadow-sm border border-white/10">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-lg font-semibold text-foreground">
               Riwayat Produksi Terbaru
             </h2>
           </div>
           {produksiList.length === 0 ? (
-            <div className="p-12 text-center text-brand/40">
+            <div className="p-12 text-center text-white/40">
               <Coffee className="w-12 h-12 mx-auto mb-4 opacity-30" />
               <p>Belum ada data produksi.</p>
               <p className="text-sm mt-1">
@@ -179,25 +179,25 @@ export default function Dashboard() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-brand-dark/5">
+                <thead className="bg-white/5">
                   <tr>
-                    <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                    <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                       Tanggal
                     </th>
-                    <th className="text-left px-6 py-3 text-sm font-medium text-brand/70">
+                    <th className="text-left px-6 py-3 text-sm font-medium text-white/70">
                       Produk
                     </th>
-                    <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                    <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                       Jumlah
                     </th>
-                    <th className="text-right px-6 py-3 text-sm font-medium text-brand/70">
+                    <th className="text-right px-6 py-3 text-sm font-medium text-white/70">
                       HPP/Unit
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brand/5">
                   {produksiList.map((p) => (
-                    <tr key={p.id} className="hover:bg-brand/5">
+                    <tr key={p.id} className="hover:bg-white/5">
                       <td className="px-6 py-4 text-sm">
                         {new Date(p.tanggal).toLocaleDateString("id-ID")}
                       </td>
@@ -218,14 +218,14 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-brand/10">
-          <div className="p-6 border-b border-brand/10">
-            <h2 className="text-lg font-semibold text-brand-dark">
+        <div className="bg-cream rounded-xl shadow-sm border border-white/10">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-lg font-semibold text-foreground">
               Ringkasan Aset Modal
             </h2>
           </div>
           {asetList.length === 0 ? (
-            <div className="p-12 text-center text-brand/40">
+            <div className="p-12 text-center text-white/40">
               <Landmark className="w-12 h-12 mx-auto mb-4 opacity-30" />
               <p>Belum ada data aset.</p>
               <p className="text-sm mt-1">
@@ -241,7 +241,7 @@ export default function Dashboard() {
                 >
                   <div>
                     <span className="font-medium text-sm">{a.nama}</span>
-                    <span className="text-xs text-brand/40 ml-2">
+                    <span className="text-xs text-white/40 ml-2">
                       {a.kategori}
                     </span>
                   </div>
@@ -251,12 +251,12 @@ export default function Dashboard() {
                 </div>
               ))}
               {asetList.length > 8 && (
-                <p className="text-xs text-center text-brand/40">
+                <p className="text-xs text-center text-white/40">
                   +{asetList.length - 8} aset lainnya
                 </p>
               )}
-              <div className="border-t border-brand/10 pt-3 flex justify-between">
-                <span className="font-semibold text-brand-dark">
+              <div className="border-t border-white/10 pt-3 flex justify-between">
+                <span className="font-semibold text-foreground">
                   Total Modal Awal
                 </span>
                 <span className="font-bold text-lg text-gold">

@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="id" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex">
         <Sidebar />
-        <main className="flex-1 lg:ml-64 p-4 pt-16 lg:pt-8 lg:p-8 bg-cream min-h-screen">
+        <main className="flex-1 lg:ml-64 p-4 pt-16 lg:pt-8 lg:p-8 bg-background min-h-screen">
           {children}
         </main>
       </body>
