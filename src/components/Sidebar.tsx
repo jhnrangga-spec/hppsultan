@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "./AuthProvider";
 import {
   LayoutDashboard,
   Coffee,
@@ -14,6 +15,7 @@ import {
   X,
   Landmark,
   FileText,
+  LogOut,
 } from "lucide-react";
 
 const menuItems = [
@@ -29,6 +31,7 @@ const menuItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <>
@@ -91,7 +94,19 @@ export default function Sidebar() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 space-y-3">
+          {user && (
+            <>
+              <p className="text-xs text-white/40 truncate">{user.email}</p>
+              <button
+                onClick={signOut}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors text-sm"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Keluar</span>
+              </button>
+            </>
+          )}
           <p className="text-xs text-white/40 text-center">
             Kopi Sultan &copy; 2026
           </p>
