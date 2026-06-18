@@ -71,3 +71,15 @@ export type Pengeluaran = {
   keterangan: string;
   created_at: string;
 };
+
+export type Penjualan = {
+  id: string;
+  produk_id: string;
+  jumlah: number;
+  harga_jual: number;
+  total: number;
+  tanggal: string;
+  keterangan: string;
+  created_at: string;
+  produk?: Produk;
+};

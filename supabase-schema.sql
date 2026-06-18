@@ -75,6 +75,18 @@ create table if not exists pengeluaran (
   created_at timestamp with time zone default now()
 );
 
+-- Tabel Penjualan
+create table if not exists penjualan (
+  id uuid default gen_random_uuid() primary key,
+  produk_id uuid not null references produk(id) on delete cascade,
+  jumlah integer not null default 0,
+  harga_jual numeric not null default 0,
+  total numeric not null default 0,
+  tanggal date not null default current_date,
+  keterangan text default '',
+  created_at timestamp with time zone default now()
+);
+
 -- Aktifkan Row Level Security
 alter table bahan_baku enable row level security;
 alter table produk enable row level security;
@@ -82,6 +94,7 @@ alter table resep enable row level security;
 alter table produksi enable row level security;
 alter table aset enable row level security;
 alter table pengeluaran enable row level security;
+alter table penjualan enable row level security;
 
 -- Policy: allow all untuk anonymous/authenticated (sesuaikan untuk production)
 create policy "Allow all on bahan_baku" on bahan_baku for all using (true) with check (true);
@@ -90,3 +103,4 @@ create policy "Allow all on resep" on resep for all using (true) with check (tru
 create policy "Allow all on produksi" on produksi for all using (true) with check (true);
 create policy "Allow all on aset" on aset for all using (true) with check (true);
 create policy "Allow all on pengeluaran" on pengeluaran for all using (true) with check (true);
+create policy "Allow all on penjualan" on penjualan for all using (true) with check (true);

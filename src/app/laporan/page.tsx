@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah, formatDate } from "@/lib/format";
-import type { BahanBaku, Produksi, Aset, Produk, Pengeluaran } from "@/lib/supabase";
+import type { BahanBaku, Produksi, Aset, Produk, Pengeluaran, Penjualan } from "@/lib/supabase";
 import { FileText, Download, AlertCircle, X, FileSpreadsheet } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -17,6 +17,7 @@ export default function LaporanPage() {
   const [asetList, setAsetList] = useState<Aset[]>([]);
   const [produkList, setProdukList] = useState<Produk[]>([]);
   const [pengeluaranList, setPengeluaranList] = useState<Pengeluaran[]>([]);
+  const [penjualanList, setPenjualanList] = useState<Penjualan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reportType, setReportType] = useState<ReportType>("hpp");
@@ -30,12 +31,13 @@ export default function LaporanPage() {
   async function loadData() {
     setLoading(true);
     setError(null);
-    const [bahanRes, produksiRes, asetRes, produkRes, pengeluaranRes] = await Promise.all([
+    const [bahanRes, produksiRes, asetRes, produkRes, pengeluaranRes, penjualanRes] = await Promise.all([
       supabase.from("bahan_baku").select("*").order("nama"),
       supabase.from("produksi").select("*, produk(*)").order("tanggal", { ascending: false }),
       supabase.from("aset").select("*").order("nama"),
       supabase.from("produk").select("*").order("nama"),
       supabase.from("pengeluaran").select("*").order("tanggal", { ascending: false }),
+      supabase.from("penjualan").select("*, produk(*)").order("tanggal", { ascending: false }),
     ]);
     if (produksiRes.error) setError("Gagal memuat data: " + produksiRes.error.message);
     setBahanList((bahanRes.data as BahanBaku[]) || []);
@@ -43,6 +45,7 @@ export default function LaporanPage() {
     setAsetList((asetRes.data as Aset[]) || []);
     setProdukList((produkRes.data as Produk[]) || []);
     setPengeluaranList((pengeluaranRes.data as Pengeluaran[]) || []);
+    setPenjualanList((penjualanRes.data as Penjualan[]) || []);
     setLoading(false);
   }
 
@@ -91,11 +94,13 @@ export default function LaporanPage() {
     });
   }
 
+  const filteredPenjualan = penjualanList.filter(
+    (p) => p.tanggal >= dateFrom && p.tanggal <= dateTo
+  );
+
   function getLabaRugiData() {
-    const pendapatan = filteredProduksi.reduce((s, p) => {
-      const hargaJual = p.produk?.harga_jual || 0;
-      return s + hargaJual * p.jumlah_produksi;
-    }, 0);
+    const pendapatan = filteredPenjualan.reduce((s, p) => s + p.total, 0);
+    const totalUnitTerjual = filteredPenjualan.reduce((s, p) => s + p.jumlah, 0);
     const totalHPP = filteredProduksi.reduce((s, p) => s + p.total_hpp, 0);
     const totalBahan = filteredProduksi.reduce((s, p) => s + p.total_biaya_bahan, 0);
     const totalTK = filteredProduksi.reduce((s, p) => s + p.biaya_tenaga_kerja, 0);
@@ -137,6 +142,8 @@ export default function LaporanPage() {
       labaBersih,
       produksiCount: filteredProduksi.length,
       totalUnit: filteredProduksi.reduce((s, p) => s + p.jumlah_produksi, 0),
+      totalUnitTerjual,
+      transaksiPenjualan: filteredPenjualan.length,
     };
   }
 
@@ -233,7 +240,7 @@ export default function LaporanPage() {
         startY: 35,
         head: [["Keterangan", "Jumlah"]],
         body: [
-          ["Pendapatan (Harga Jual × Unit)", formatRupiah(lr.pendapatan)],
+          ["Pendapatan Penjualan", formatRupiah(lr.pendapatan)],
           ["", ""],
           ["Harga Pokok Produksi (HPP):", ""],
           ["  - Biaya Bahan Baku", formatRupiah(lr.totalBahan)],
@@ -335,7 +342,7 @@ export default function LaporanPage() {
         [`Periode: ${periodeLabel()}`],
         [],
         ["Keterangan", "Jumlah"],
-        ["Pendapatan (Harga Jual × Unit)", lr.pendapatan],
+        ["Pendapatan Penjualan", lr.pendapatan],
         [],
         ["Harga Pokok Produksi (HPP):", ""],
         ["  Biaya Bahan Baku", lr.totalBahan],
@@ -471,7 +478,7 @@ export default function LaporanPage() {
           <div className="p-4">
             {reportType === "hpp" && <HPPPreview data={getHPPData()} />}
             {reportType === "stok" && <StokPreview data={getStokData()} />}
-            {reportType === "labarugi" && <LabaRugiPreview data={getLabaRugiData()} produkList={produkList} produksiList={filteredProduksi} />}
+            {reportType === "labarugi" && <LabaRugiPreview data={getLabaRugiData()} produkList={produkList} produksiList={filteredProduksi} penjualanList={filteredPenjualan} />}
             {reportType === "aset" && <AsetPreview data={getAsetData()} />}
           </div>
         )}
@@ -575,16 +582,18 @@ function StokPreview({ data }: { data: { nama: string; satuan_beli: string; kema
   );
 }
 
-function LabaRugiPreview({ data, produkList, produksiList }: {
-  data: { pendapatan: number; totalHPP: number; totalBahan: number; totalTK: number; totalOH: number; penyusutan: number; totalPengeluaran: number; kategoriPengeluaran: { kategori: string; total: number }[]; labaKotor: number; labaBersih: number; produksiCount: number; totalUnit: number };
+function LabaRugiPreview({ data, produkList, produksiList, penjualanList }: {
+  data: { pendapatan: number; totalHPP: number; totalBahan: number; totalTK: number; totalOH: number; penyusutan: number; totalPengeluaran: number; kategoriPengeluaran: { kategori: string; total: number }[]; labaKotor: number; labaBersih: number; produksiCount: number; totalUnit: number; totalUnitTerjual: number; transaksiPenjualan: number };
   produkList: Produk[];
   produksiList: Produksi[];
+  penjualanList: Penjualan[];
 }) {
   const perProduk = produkList.map((p) => {
-    const items = produksiList.filter((pr) => pr.produk_id === p.id);
-    const totalUnit = items.reduce((s, i) => s + i.jumlah_produksi, 0);
-    const totalHPP = items.reduce((s, i) => s + i.total_hpp, 0);
-    const pendapatan = totalUnit * p.harga_jual;
+    const sales = penjualanList.filter((s) => s.produk_id === p.id);
+    const totalUnit = sales.reduce((s, i) => s + i.jumlah, 0);
+    const pendapatan = sales.reduce((s, i) => s + i.total, 0);
+    const produksiItems = produksiList.filter((pr) => pr.produk_id === p.id);
+    const totalHPP = produksiItems.reduce((s, i) => s + i.total_hpp, 0);
     return { nama: p.nama, hargaJual: p.harga_jual, totalUnit, totalHPP, pendapatan, laba: pendapatan - totalHPP };
   }).filter((p) => p.totalUnit > 0);
 
@@ -611,7 +620,7 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
         <table className="w-full text-sm">
           <tbody>
             <tr className="bg-emerald-900/30">
-              <td className="px-4 py-3 font-semibold">Pendapatan (Harga Jual × Unit)</td>
+              <td className="px-4 py-3 font-semibold">Pendapatan Penjualan</td>
               <td className="px-4 py-3 text-right font-bold text-emerald-300">{formatRupiah(data.pendapatan)}</td>
             </tr>
             <tr className="bg-white/5">
