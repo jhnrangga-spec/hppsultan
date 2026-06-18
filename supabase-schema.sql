@@ -64,12 +64,24 @@ create table if not exists aset (
   created_at timestamp with time zone default now()
 );
 
+-- Tabel Pengeluaran Bulanan
+create table if not exists pengeluaran (
+  id uuid default gen_random_uuid() primary key,
+  nama text not null,
+  kategori text not null default 'Lain-lain',
+  jumlah numeric not null default 0,
+  tanggal date not null default current_date,
+  keterangan text default '',
+  created_at timestamp with time zone default now()
+);
+
 -- Aktifkan Row Level Security
 alter table bahan_baku enable row level security;
 alter table produk enable row level security;
 alter table resep enable row level security;
 alter table produksi enable row level security;
 alter table aset enable row level security;
+alter table pengeluaran enable row level security;
 
 -- Policy: allow all untuk anonymous/authenticated (sesuaikan untuk production)
 create policy "Allow all on bahan_baku" on bahan_baku for all using (true) with check (true);
@@ -77,3 +89,4 @@ create policy "Allow all on produk" on produk for all using (true) with check (t
 create policy "Allow all on resep" on resep for all using (true) with check (true);
 create policy "Allow all on produksi" on produksi for all using (true) with check (true);
 create policy "Allow all on aset" on aset for all using (true) with check (true);
+create policy "Allow all on pengeluaran" on pengeluaran for all using (true) with check (true);

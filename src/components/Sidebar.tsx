@@ -16,6 +16,7 @@ import {
   Landmark,
   FileText,
   LogOut,
+  Wallet,
 } from "lucide-react";
 
 const menuItems = [
@@ -25,6 +26,7 @@ const menuItems = [
   { href: "/produk", label: "Produk", icon: Coffee },
   { href: "/kalkulator", label: "Kalkulator HPP", icon: Calculator },
   { href: "/produksi", label: "Riwayat Produksi", icon: ClipboardList },
+  { href: "/pengeluaran", label: "Pengeluaran", icon: Wallet },
   { href: "/laporan", label: "Laporan", icon: FileText },
 ];
 

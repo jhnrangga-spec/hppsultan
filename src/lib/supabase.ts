@@ -61,3 +61,13 @@ export type Aset = {
   keterangan: string;
   created_at: string;
 };
+
+export type Pengeluaran = {
+  id: string;
+  nama: string;
+  kategori: string;
+  jumlah: number;
+  tanggal: string;
+  keterangan: string;
+  created_at: string;
+};
