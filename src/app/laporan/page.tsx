@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah, formatDate } from "@/lib/format";
-import type { BahanBaku, Produksi, Aset, Produk } from "@/lib/supabase";
+import type { BahanBaku, Produksi, Aset, Produk, Pengeluaran } from "@/lib/supabase";
 import { FileText, Download, AlertCircle, X, FileSpreadsheet } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -16,6 +16,7 @@ export default function LaporanPage() {
   const [produksiList, setProduksiList] = useState<Produksi[]>([]);
   const [asetList, setAsetList] = useState<Aset[]>([]);
   const [produkList, setProdukList] = useState<Produk[]>([]);
+  const [pengeluaranList, setPengeluaranList] = useState<Pengeluaran[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reportType, setReportType] = useState<ReportType>("hpp");
@@ -29,17 +30,19 @@ export default function LaporanPage() {
   async function loadData() {
     setLoading(true);
     setError(null);
-    const [bahanRes, produksiRes, asetRes, produkRes] = await Promise.all([
+    const [bahanRes, produksiRes, asetRes, produkRes, pengeluaranRes] = await Promise.all([
       supabase.from("bahan_baku").select("*").order("nama"),
       supabase.from("produksi").select("*, produk(*)").order("tanggal", { ascending: false }),
       supabase.from("aset").select("*").order("nama"),
       supabase.from("produk").select("*").order("nama"),
+      supabase.from("pengeluaran").select("*").order("tanggal", { ascending: false }),
     ]);
     if (produksiRes.error) setError("Gagal memuat data: " + produksiRes.error.message);
     setBahanList((bahanRes.data as BahanBaku[]) || []);
     setProduksiList((produksiRes.data as Produksi[]) || []);
     setAsetList((asetRes.data as Aset[]) || []);
     setProdukList((produkRes.data as Produk[]) || []);
+    setPengeluaranList((pengeluaranRes.data as Pengeluaran[]) || []);
     setLoading(false);
   }
 
@@ -104,8 +107,22 @@ export default function LaporanPage() {
       const months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth()) + 1;
       return s + monthly * Math.min(months, 12);
     }, 0);
+
+    const filteredPengeluaran = pengeluaranList.filter(
+      (p) => p.tanggal >= dateFrom && p.tanggal <= dateTo
+    );
+    const totalPengeluaran = filteredPengeluaran.reduce((s, p) => s + p.jumlah, 0);
+
+    const kategoriPengeluaran: { kategori: string; total: number }[] = [];
+    filteredPengeluaran.forEach((p) => {
+      const existing = kategoriPengeluaran.find((k) => k.kategori === p.kategori);
+      if (existing) existing.total += p.jumlah;
+      else kategoriPengeluaran.push({ kategori: p.kategori, total: p.jumlah });
+    });
+    kategoriPengeluaran.sort((a, b) => b.total - a.total);
+
     const labaKotor = pendapatan - totalHPP;
-    const labaBersih = labaKotor - penyusutan;
+    const labaBersih = labaKotor - penyusutan - totalPengeluaran;
 
     return {
       pendapatan,
@@ -114,6 +131,8 @@ export default function LaporanPage() {
       totalTK,
       totalOH,
       penyusutan,
+      totalPengeluaran,
+      kategoriPengeluaran,
       labaKotor,
       labaBersih,
       produksiCount: filteredProduksi.length,
@@ -207,6 +226,9 @@ export default function LaporanPage() {
       doc.text(`Periode: ${periodeLabel()}`, pageWidth / 2, 28, { align: "center" });
 
       const lr = getLabaRugiData();
+      const pengeluaranRows = lr.kategoriPengeluaran.map((k) => [
+        `  - ${k.kategori}`, formatRupiah(k.total),
+      ]);
       autoTable(doc, {
         startY: 35,
         head: [["Keterangan", "Jumlah"]],
@@ -223,6 +245,10 @@ export default function LaporanPage() {
           ["", ""],
           ["Beban Penyusutan Aset", formatRupiah(lr.penyusutan)],
           ["", ""],
+          ["Pengeluaran Operasional:", ""],
+          ...pengeluaranRows,
+          ["Total Pengeluaran Operasional", formatRupiah(lr.totalPengeluaran)],
+          ["", ""],
           ["LABA BERSIH", formatRupiah(lr.labaBersih)],
         ],
         styles: { fontSize: 9 },
@@ -230,7 +256,7 @@ export default function LaporanPage() {
         columnStyles: { 1: { halign: "right" } },
         didParseCell: (data) => {
           const text = String(data.cell.raw);
-          if (text === "LABA KOTOR" || text === "LABA BERSIH" || text === "Total HPP") {
+          if (text === "LABA KOTOR" || text === "LABA BERSIH" || text === "Total HPP" || text === "Total Pengeluaran Operasional") {
             data.cell.styles.fontStyle = "bold";
           }
           if (text === "LABA BERSIH") {
@@ -301,6 +327,9 @@ export default function LaporanPage() {
     } else if (reportType === "labarugi") {
       sheetName = "Laba Rugi";
       const lr = getLabaRugiData();
+      const pengeluaranRows = lr.kategoriPengeluaran.map((k) => [
+        `  ${k.kategori}`, k.total,
+      ]);
       wsData = [
         ["LAPORAN LABA RUGI - KOPI SULTAN"],
         [`Periode: ${periodeLabel()}`],
@@ -317,6 +346,10 @@ export default function LaporanPage() {
         ["LABA KOTOR", lr.labaKotor],
         [],
         ["Beban Penyusutan Aset", lr.penyusutan],
+        [],
+        ["Pengeluaran Operasional:", ""],
+        ...pengeluaranRows,
+        ["Total Pengeluaran Operasional", lr.totalPengeluaran],
         [],
         ["LABA BERSIH", lr.labaBersih],
       ];
@@ -543,7 +576,7 @@ function StokPreview({ data }: { data: { nama: string; satuan_beli: string; kema
 }
 
 function LabaRugiPreview({ data, produkList, produksiList }: {
-  data: { pendapatan: number; totalHPP: number; totalBahan: number; totalTK: number; totalOH: number; penyusutan: number; labaKotor: number; labaBersih: number; produksiCount: number; totalUnit: number };
+  data: { pendapatan: number; totalHPP: number; totalBahan: number; totalTK: number; totalOH: number; penyusutan: number; totalPengeluaran: number; kategoriPengeluaran: { kategori: string; total: number }[]; labaKotor: number; labaBersih: number; produksiCount: number; totalUnit: number };
   produkList: Produk[];
   produksiList: Produksi[];
 }) {
@@ -563,8 +596,8 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
           <p className="text-2xl font-bold text-emerald-300">{formatRupiah(data.pendapatan)}</p>
         </div>
         <div className="bg-red-900/30 rounded-xl p-5 border border-red-700">
-          <p className="text-sm text-red-400">Total HPP + Penyusutan</p>
-          <p className="text-2xl font-bold text-red-300">{formatRupiah(data.totalHPP + data.penyusutan)}</p>
+          <p className="text-sm text-red-400">Total Beban</p>
+          <p className="text-2xl font-bold text-red-300">{formatRupiah(data.totalHPP + data.penyusutan + data.totalPengeluaran)}</p>
         </div>
         <div className={`rounded-xl p-5 border ${data.labaBersih >= 0 ? "bg-gold-light/30 border-amber-700" : "bg-red-900/30 border-red-700"}`}>
           <p className="text-sm text-white/60">Laba Bersih</p>
@@ -607,6 +640,25 @@ function LabaRugiPreview({ data, produkList, produksiList }: {
             <tr>
               <td className="px-4 py-2 pl-8">Beban Penyusutan Aset</td>
               <td className="px-4 py-2 text-right">{formatRupiah(data.penyusutan)}</td>
+            </tr>
+            <tr className="bg-white/5 border-t border-white/10">
+              <td colSpan={2} className="px-4 py-2 font-semibold text-white/70">Pengeluaran Operasional</td>
+            </tr>
+            {data.kategoriPengeluaran.map((k, i) => (
+              <tr key={i}>
+                <td className="px-4 py-2 pl-8">{k.kategori}</td>
+                <td className="px-4 py-2 text-right">{formatRupiah(k.total)}</td>
+              </tr>
+            ))}
+            {data.kategoriPengeluaran.length === 0 && (
+              <tr>
+                <td className="px-4 py-2 pl-8 text-white/40">Tidak ada pengeluaran</td>
+                <td className="px-4 py-2 text-right">Rp 0</td>
+              </tr>
+            )}
+            <tr className="border-t border-white/10">
+              <td className="px-4 py-2 font-semibold">Total Pengeluaran Operasional</td>
+              <td className="px-4 py-2 text-right font-bold text-red-400">{formatRupiah(data.totalPengeluaran)}</td>
             </tr>
             <tr className={`border-t-2 border-white/20 ${data.labaBersih >= 0 ? "bg-emerald-900/30" : "bg-red-900/30"}`}>
               <td className="px-4 py-3 font-bold text-lg">LABA BERSIH</td>
