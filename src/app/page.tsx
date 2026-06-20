@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatRupiah } from "@/lib/format";
-import type { Produksi, Aset } from "@/lib/supabase";
+import type { Produksi, Aset, BahanBaku, Produk } from "@/lib/supabase";
 import {
   Coffee,
   Package,
@@ -11,6 +11,7 @@ import {
   DollarSign,
   Crown,
   AlertCircle,
+  AlertTriangle,
   X,
   Landmark,
   Wallet,
@@ -19,8 +20,8 @@ import {
 export default function Dashboard() {
   const [produksiList, setProduksiList] = useState<Produksi[]>([]);
   const [asetList, setAsetList] = useState<Aset[]>([]);
-  const [bahanCount, setBahanCount] = useState(0);
-  const [produkCount, setProdukCount] = useState(0);
+  const [bahanList, setBahanList] = useState<BahanBaku[]>([]);
+  const [produkList, setProdukList] = useState<Produk[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,8 +34,8 @@ export default function Dashboard() {
         .select("*, produk(*)")
         .order("tanggal", { ascending: false })
         .limit(10),
-      supabase.from("bahan_baku").select("id", { count: "exact" }),
-      supabase.from("produk").select("id", { count: "exact" }),
+      supabase.from("bahan_baku").select("*").order("nama"),
+      supabase.from("produk").select("*").order("nama"),
       supabase.from("aset").select("*").order("created_at", { ascending: false }),
     ]);
 
@@ -42,8 +43,8 @@ export default function Dashboard() {
       setError("Gagal memuat data: " + produksiRes.error.message);
     }
     setProduksiList((produksiRes.data as Produksi[]) || []);
-    setBahanCount(bahanRes.count || 0);
-    setProdukCount(produkRes.count || 0);
+    setBahanList((bahanRes.data as BahanBaku[]) || []);
+    setProdukList((produkRes.data as Produk[]) || []);
     setAsetList((asetRes.data as Aset[]) || []);
     setLoading(false);
   }
@@ -68,6 +69,15 @@ export default function Dashboard() {
     0
   );
 
+  const stokMenipis = [
+    ...bahanList.filter((b) => b.stok_minimum > 0 && b.stok <= b.stok_minimum && b.stok > 0).map((b) => ({ nama: b.nama, stok: b.stok, min: b.stok_minimum, satuan: b.satuan, tipe: "Bahan Baku" })),
+    ...produkList.filter((p) => p.stok_minimum > 0 && p.stok <= p.stok_minimum && p.stok > 0).map((p) => ({ nama: p.nama, stok: p.stok, min: p.stok_minimum, satuan: "unit", tipe: "Produk" })),
+  ];
+  const stokHabis = [
+    ...bahanList.filter((b) => b.stok <= 0).map((b) => ({ nama: b.nama, tipe: "Bahan Baku" })),
+    ...produkList.filter((p) => p.stok <= 0).map((p) => ({ nama: p.nama, tipe: "Produk" })),
+  ];
+
   const stats = [
     {
       label: "Total Modal Awal",
@@ -83,13 +93,13 @@ export default function Dashboard() {
     },
     {
       label: "Total Bahan Baku",
-      value: bahanCount.toString(),
+      value: bahanList.length.toString(),
       icon: Package,
       color: "bg-amber-900/30 text-amber-300",
     },
     {
       label: "Total Produk",
-      value: produkCount.toString(),
+      value: produkList.length.toString(),
       icon: Coffee,
       color: "bg-emerald-900/30 text-emerald-300",
     },
@@ -160,6 +170,29 @@ export default function Dashboard() {
           );
         })}
       </div>
+
+      {(stokMenipis.length > 0 || stokHabis.length > 0) && (
+        <div className="mb-8 bg-amber-900/30 border border-amber-700 rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400" />
+            <h3 className="font-semibold text-amber-300">Peringatan Stok</h3>
+          </div>
+          <div className="space-y-2">
+            {stokHabis.map((item, i) => (
+              <div key={`habis-${i}`} className="flex items-center justify-between bg-red-900/30 rounded-lg px-4 py-2">
+                <span className="text-sm font-medium">{item.nama} <span className="text-xs text-white/40">({item.tipe})</span></span>
+                <span className="text-xs font-bold text-red-400">HABIS</span>
+              </div>
+            ))}
+            {stokMenipis.map((item, i) => (
+              <div key={`menipis-${i}`} className="flex items-center justify-between bg-amber-900/20 rounded-lg px-4 py-2">
+                <span className="text-sm font-medium">{item.nama} <span className="text-xs text-white/40">({item.tipe})</span></span>
+                <span className="text-xs text-amber-400">Stok: {item.stok} {item.satuan} (min: {item.min})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-cream rounded-xl shadow-sm border border-white/10">

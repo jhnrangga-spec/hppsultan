@@ -86,6 +86,7 @@ export default function PenjualanPage() {
 
     const jumlah = parseFloat(form.jumlah);
     const hargaJual = parseFloat(form.harga_jual);
+    const produk = produkList.find((p) => p.id === form.produk_id);
 
     const payload = {
       produk_id: form.produk_id,
@@ -98,19 +99,40 @@ export default function PenjualanPage() {
 
     const { error: err } = await supabase.from("penjualan").insert(payload);
 
-    setSubmitting(false);
-
     if (err) {
+      setSubmitting(false);
       setError("Gagal menyimpan: " + err.message);
       return;
     }
 
+    if (produk) {
+      const { data: freshProduk } = await supabase.from("produk").select("stok").eq("id", form.produk_id).single();
+      const currentStok = freshProduk?.stok || 0;
+      const newStok = Math.max(0, currentStok - jumlah);
+      await supabase.from("produk").update({ stok: newStok }).eq("id", form.produk_id);
+      await supabase.from("mutasi_stok").insert({
+        tipe: "produk",
+        item_id: form.produk_id,
+        item_nama: produk.nama,
+        jenis: "keluar",
+        jumlah,
+        satuan: "unit",
+        saldo_akhir: newStok,
+        referensi: "Penjualan",
+        tanggal: form.tanggal,
+        keterangan: form.keterangan || `${jumlah} unit @ ${formatRupiah(hargaJual)}`,
+      });
+    }
+
+    setSubmitting(false);
     setShowForm(false);
     loadData();
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Yakin ingin menghapus data penjualan ini?")) return;
+
+    const item = items.find((i) => i.id === id);
     const { error: err } = await supabase
       .from("penjualan")
       .delete()
@@ -119,6 +141,26 @@ export default function PenjualanPage() {
       setError("Gagal menghapus: " + err.message);
       return;
     }
+
+    if (item) {
+      const { data: freshProduk } = await supabase.from("produk").select("stok").eq("id", item.produk_id).single();
+      const currentStok = freshProduk?.stok || 0;
+      const newStok = currentStok + item.jumlah;
+      await supabase.from("produk").update({ stok: newStok }).eq("id", item.produk_id);
+      await supabase.from("mutasi_stok").insert({
+        tipe: "produk",
+        item_id: item.produk_id,
+        item_nama: item.produk?.nama || "-",
+        jenis: "masuk",
+        jumlah: item.jumlah,
+        satuan: "unit",
+        saldo_akhir: newStok,
+        referensi: "Batal Penjualan",
+        tanggal: item.tanggal,
+        keterangan: `Hapus data penjualan`,
+      });
+    }
+
     loadData();
   }
 

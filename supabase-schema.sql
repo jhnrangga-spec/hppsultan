@@ -11,6 +11,7 @@ create table if not exists bahan_baku (
   satuan text not null default 'kg',
   harga_per_satuan numeric not null default 0,
   stok numeric not null default 0,
+  stok_minimum numeric not null default 0,
   satuan_beli text default 'pack',
   harga_beli numeric default 0,
   isi_per_kemasan numeric default 1,
@@ -24,6 +25,8 @@ create table if not exists produk (
   nama text not null,
   deskripsi text default '',
   harga_jual numeric not null default 0,
+  stok integer not null default 0,
+  stok_minimum integer not null default 0,
   created_at timestamp with time zone default now()
 );
 
@@ -87,6 +90,34 @@ create table if not exists penjualan (
   created_at timestamp with time zone default now()
 );
 
+-- Tabel Pembelian Bahan Baku
+create table if not exists pembelian (
+  id uuid default gen_random_uuid() primary key,
+  bahan_baku_id uuid not null references bahan_baku(id) on delete cascade,
+  jumlah_kemasan numeric not null default 0,
+  jumlah_satuan numeric not null default 0,
+  harga_total numeric not null default 0,
+  tanggal date not null default current_date,
+  keterangan text default '',
+  created_at timestamp with time zone default now()
+);
+
+-- Tabel Mutasi Stok (Kartu Stok)
+create table if not exists mutasi_stok (
+  id uuid default gen_random_uuid() primary key,
+  tipe text not null default 'bahan_baku',
+  item_id uuid not null,
+  item_nama text not null default '',
+  jenis text not null default 'masuk',
+  jumlah numeric not null default 0,
+  satuan text not null default '',
+  saldo_akhir numeric not null default 0,
+  referensi text default '',
+  tanggal date not null default current_date,
+  keterangan text default '',
+  created_at timestamp with time zone default now()
+);
+
 -- Aktifkan Row Level Security
 alter table bahan_baku enable row level security;
 alter table produk enable row level security;
@@ -95,6 +126,8 @@ alter table produksi enable row level security;
 alter table aset enable row level security;
 alter table pengeluaran enable row level security;
 alter table penjualan enable row level security;
+alter table pembelian enable row level security;
+alter table mutasi_stok enable row level security;
 
 -- Policy: allow all untuk anonymous/authenticated (sesuaikan untuk production)
 create policy "Allow all on bahan_baku" on bahan_baku for all using (true) with check (true);
@@ -104,3 +137,5 @@ create policy "Allow all on produksi" on produksi for all using (true) with chec
 create policy "Allow all on aset" on aset for all using (true) with check (true);
 create policy "Allow all on pengeluaran" on pengeluaran for all using (true) with check (true);
 create policy "Allow all on penjualan" on penjualan for all using (true) with check (true);
+create policy "Allow all on pembelian" on pembelian for all using (true) with check (true);
+create policy "Allow all on mutasi_stok" on mutasi_stok for all using (true) with check (true);

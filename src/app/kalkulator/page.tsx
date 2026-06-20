@@ -93,13 +93,58 @@ export default function KalkulatorPage() {
       tanggal,
     });
 
-    setSaving(false);
-
     if (err) {
+      setSaving(false);
       setError("Gagal menyimpan produksi: " + err.message);
       return;
     }
 
+    const mutasiEntries = [];
+
+    for (const item of resepItems) {
+      const bahanUsed = item.jumlah * qty;
+      const bahan = item.bahan_baku;
+      if (!bahan) continue;
+      const newStok = Math.max(0, bahan.stok - bahanUsed);
+      await supabase.from("bahan_baku").update({ stok: newStok }).eq("id", bahan.id);
+      mutasiEntries.push({
+        tipe: "bahan_baku",
+        item_id: bahan.id,
+        item_nama: bahan.nama,
+        jenis: "keluar",
+        jumlah: bahanUsed,
+        satuan: bahan.satuan,
+        saldo_akhir: newStok,
+        referensi: `Produksi ${currentProduk?.nama || ""}`,
+        tanggal,
+        keterangan: `${qty} unit produksi`,
+      });
+    }
+
+    if (currentProduk) {
+      const { data: freshProduk } = await supabase.from("produk").select("stok").eq("id", selectedProduk).single();
+      const currentStok = freshProduk?.stok || 0;
+      const newStok = currentStok + qty;
+      await supabase.from("produk").update({ stok: newStok }).eq("id", selectedProduk);
+      mutasiEntries.push({
+        tipe: "produk",
+        item_id: selectedProduk,
+        item_nama: currentProduk.nama,
+        jenis: "masuk",
+        jumlah: qty,
+        satuan: "unit",
+        saldo_akhir: newStok,
+        referensi: "Produksi",
+        tanggal,
+        keterangan: `HPP/unit: ${hppPerUnit.toFixed(0)}`,
+      });
+    }
+
+    if (mutasiEntries.length > 0) {
+      await supabase.from("mutasi_stok").insert(mutasiEntries);
+    }
+
+    setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }

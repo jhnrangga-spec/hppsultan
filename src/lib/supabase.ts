@@ -12,6 +12,7 @@ export type BahanBaku = {
   satuan: string;
   harga_per_satuan: number;
   stok: number;
+  stok_minimum: number;
   satuan_beli: string;
   harga_beli: number;
   isi_per_kemasan: number;
@@ -24,6 +25,8 @@ export type Produk = {
   nama: string;
   deskripsi: string;
   harga_jual: number;
+  stok: number;
+  stok_minimum: number;
   created_at: string;
 };
 
@@ -67,6 +70,33 @@ export type Pengeluaran = {
   nama: string;
   kategori: string;
   jumlah: number;
+  tanggal: string;
+  keterangan: string;
+  created_at: string;
+};
+
+export type Pembelian = {
+  id: string;
+  bahan_baku_id: string;
+  jumlah_kemasan: number;
+  jumlah_satuan: number;
+  harga_total: number;
+  tanggal: string;
+  keterangan: string;
+  created_at: string;
+  bahan_baku?: BahanBaku;
+};
+
+export type MutasiStok = {
+  id: string;
+  tipe: "bahan_baku" | "produk";
+  item_id: string;
+  item_nama: string;
+  jenis: "masuk" | "keluar";
+  jumlah: number;
+  satuan: string;
+  saldo_akhir: number;
+  referensi: string;
   tanggal: string;
   keterangan: string;
   created_at: string;

@@ -18,16 +18,22 @@ import {
   LogOut,
   Wallet,
   ShoppingCart,
+  Warehouse,
+  Truck,
+  ArrowLeftRight,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/aset", label: "Aset Modal", icon: Landmark },
   { href: "/bahan-baku", label: "Bahan Baku", icon: Package },
+  { href: "/pembelian", label: "Pembelian", icon: Truck },
   { href: "/produk", label: "Produk", icon: Coffee },
   { href: "/kalkulator", label: "Kalkulator HPP", icon: Calculator },
   { href: "/produksi", label: "Riwayat Produksi", icon: ClipboardList },
   { href: "/penjualan", label: "Penjualan", icon: ShoppingCart },
+  { href: "/gudang", label: "Gudang & Stok", icon: Warehouse },
+  { href: "/mutasi", label: "Mutasi Stok", icon: ArrowLeftRight },
   { href: "/pengeluaran", label: "Pengeluaran", icon: Wallet },
   { href: "/laporan", label: "Laporan", icon: FileText },
 ];
